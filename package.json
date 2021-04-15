@@ -1,0 +1,95 @@
+{
+  "name": "nestjs-context",
+  "version": "0.1.0",
+  "description": "Nestjs execution context information service including request scoped info",
+  "author": "Jacob Dharandas Méndez <j.dharandas@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PrestaShopCorp/nestjs-context.git"
+  },
+  "keywords": [
+    "nestjs",
+    "context",
+    "request"
+  ],
+  "scripts": {
+    "prepack": "yarn run build",
+    "build": "tsc -p tsconfig.json",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json"
+  },
+  "files": [
+    "index.*",
+    "dist/",
+    "package.json",
+    "README.md"
+  ],
+  "dependencies": {
+    "@nestjs/common": "^7.5.1",
+    "@nestjs/core": "^7.5.1",
+    "@nestjs/graphql": "^7.10.3",
+    "@nestjs/platform-express": "^7.5.1",
+    "apollo-server-express": "^2.23.0",
+    "graphql": "^15.5.0",
+    "graphql-tools": "^7.0.4",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^3.0.2",
+    "rxjs": "^6.6.3"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^7.5.1",
+    "@nestjs/schematics": "^7.1.3",
+    "@nestjs/testing": "^7.5.1",
+    "@types/express": "^4.17.8",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.14.6",
+    "@types/supertest": "^2.0.10",
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
+    "eslint": "^7.12.1",
+    "eslint-config-prettier": "7.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^6.0.0",
+    "jest": "^26.6.3",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.1.2",
+    "supertest": "^6.0.0",
+    "ts-jest": "^26.4.3",
+    "ts-loader": "^8.0.8",
+    "ts-node": "^9.0.0",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.0.5"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}
