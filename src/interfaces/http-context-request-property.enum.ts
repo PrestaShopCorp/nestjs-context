@@ -1,4 +1,4 @@
-export enum HttpContextProperty {
+export enum HttpContextRequestProperty {
   BODY = 'body',
   QUERY = 'query',
   PARAMS = 'params',

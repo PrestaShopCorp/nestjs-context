@@ -1,28 +1,28 @@
 import { ClassProvider } from '@nestjs/common';
-import { ProviderInterface } from './provider.interface';
-import { ExecutionContext } from './execution-context.enum';
-import { HttpContextProperty } from './http-context-property.enum';
+import { IContextPropertyProvider } from './context-property-provider.interface';
+import { ContextName } from './context-name.enum';
+import { HttpContextRequestProperty } from './http-context-request-property.enum';
 
 export type BuildContextFromValueType = string | number;
 export type BuildContextFromCallbackType = (req?: any) => any;
-export type BuildContextFromProviderType = ClassProvider<ProviderInterface>['useClass'];
+export type BuildContextFromProviderType = ClassProvider<IContextPropertyProvider>['useClass'];
 export type BuildContextFromHttpRequestType = `${
-  | HttpContextProperty.BODY
-  | HttpContextProperty.QUERY
-  | HttpContextProperty.HEADERS
-  | HttpContextProperty.PARAMS}.${string}`;
+  | HttpContextRequestProperty.BODY
+  | HttpContextRequestProperty.QUERY
+  | HttpContextRequestProperty.HEADERS
+  | HttpContextRequestProperty.PARAMS}.${string}`;
 export type BuildFromGqlRequestType = 'string'; // TODO JDM make it work
-
-export type BuildContextDefinitionType<T extends ExecutionContext> =
+export type BuildContextDefinitionType<T extends ContextName> =
   | BuildContextFromValueType
   | BuildContextFromCallbackType
   | BuildContextFromProviderType
-  | (T extends ExecutionContext.HTTP
+  | (T extends ContextName.HTTP
       ? BuildContextFromHttpRequestType
-      : T extends ExecutionContext.GQL
+      : T extends ContextName.GQL
       ? BuildFromGqlRequestType
       : never);
-export type BuildContextType<T extends ExecutionContext> = Record<
+
+export type BuildContextType<T extends ContextName> = Record<
   string,
   BuildContextDefinitionType<T>[]
 >;

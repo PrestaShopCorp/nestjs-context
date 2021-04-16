@@ -1,4 +1,4 @@
-export enum ExecutionContext {
+export enum ContextName {
   HTTP = 'http',
   GQL = 'gql',
   RPC = 'rpc',

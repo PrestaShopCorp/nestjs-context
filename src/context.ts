@@ -1,53 +1,49 @@
-import { ModuleRef, REQUEST } from '@nestjs/core';
-import { Inject, Injectable, Scope } from '@nestjs/common';
-// import { CONTEXT } from '@nestjs/graphql';
+import { ModuleRef } from '@nestjs/core';
 import { get, pickBy } from 'lodash';
-import { ConfigType, ProviderInterface } from './interfaces';
+import { ConfigType, IContextPropertyProvider } from './interfaces';
 import {
-  isGqlRequestContextDefinition,
-  isHttpRequestContextDefinition,
+  isGqlContextRequestDefinition,
+  isHttpContextRequestDefinition,
 } from './type-guards';
-import { CONTEXT_MODULE_CONFIG } from './constants';
 
-/**
- * @todo Add graphql and microservice contexts
- */
-@Injectable({ scope: Scope.REQUEST })
 export class Context {
   constructor(
-    protected readonly moduleRef: ModuleRef,
-    @Inject(CONTEXT_MODULE_CONFIG) protected readonly config: ConfigType,
-    @Inject(REQUEST) private readonly request, // @Inject(CONTEXT) private readonly context,
+    private readonly config: ConfigType,
+    private readonly request?,
+    private readonly moduleRef?: ModuleRef,
   ) {}
 
   private getRequest() {
     return this.request;
-    // return this.request ?? this.context;
   }
 
-  private getProvider(name): ProviderInterface {
+  private getProvider(name): IContextPropertyProvider {
     try {
-      return this.moduleRef.get(name);
+      return this.moduleRef?.get(name);
     } catch (e) {
       return undefined;
     }
   }
 
-  private buildContextValue(definition) {
+  private buildContextValue(key, definition) {
     switch (true) {
       // from request
-      case isHttpRequestContextDefinition(definition):
-      case isGqlRequestContextDefinition(definition):
+      case isHttpContextRequestDefinition(definition):
+      case isGqlContextRequestDefinition(definition):
+        // TODO do we need to add a microservice definition too ?
         return this.getRequest() ? get(this.getRequest(), definition) : null;
+
       // from provider or custom callback
       case typeof definition === 'function':
         const provider = this.getProvider(definition);
         return provider
-          ? provider.get(this.getRequest())
+          ? provider.get(this.getRequest(), key)
           : definition(this.getRequest());
+
       // from custom number or custom string value
       case ['number', 'string'].includes(typeof definition):
         return definition;
+
       // unknown
       default:
         return null;
@@ -57,7 +53,7 @@ export class Context {
   get(key) {
     let value = null;
     this.config.build[key]?.forEach((definition) => {
-      value = this.buildContextValue(definition) ?? value;
+      value = this.buildContextValue(key, definition) ?? value;
     });
     return value;
   }

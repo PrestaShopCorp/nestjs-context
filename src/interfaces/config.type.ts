@@ -1,16 +1,16 @@
 import { BuildContextType } from './build-context.type';
-import { ExecutionContext } from './execution-context.enum';
+import { ContextName } from './context-name.enum';
 
 export type ConfigType =
   | {
-      type: ExecutionContext.HTTP;
-      build: BuildContextType<ExecutionContext.HTTP>;
+      type: ContextName.HTTP;
+      build: BuildContextType<ContextName.HTTP>;
     }
   | {
-      type: ExecutionContext.GQL;
-      build: BuildContextType<ExecutionContext.GQL>;
+      type: ContextName.GQL;
+      build: BuildContextType<ContextName.GQL>;
     }
   | {
-      type: ExecutionContext.RPC;
-      build: BuildContextType<ExecutionContext.RPC>;
+      type: ContextName.RPC;
+      build: BuildContextType<ContextName.RPC>;
     };

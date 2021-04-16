@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
 import { Request } from 'express';
-import { ContextModule } from '../../../src/context.module';
+import { ContextModule, ContextName } from '../../../src';
 import { ExampleController } from './example.controller';
-import { ExecutionContext } from '../../../src/interfaces';
-import { ExampleContextPropertyProviderService } from './example-context-property-provider.service';
+import { ExampleContextPropertyProvider } from './example-context-property.provider';
 
 @Module({
   imports: [
     ContextModule.registerWithDefaults(
-      ExecutionContext.HTTP,
+      ContextName.HTTP,
       {
         from_value: ['my-value'],
         from_header: ['headers.host'],
@@ -17,10 +16,10 @@ import { ExampleContextPropertyProviderService } from './example-context-propert
           'query.environment',
           process.env.NODE_ENV,
         ],
-        from_provider: [ExampleContextPropertyProviderService],
-        from_callback: [(req: Request) => `custom-fx-id:${req.body.id}`],
+        from_provider: [ExampleContextPropertyProvider],
+        from_callback: [(req: Request) => `callback:${req.body.id}`],
       },
-      [ExampleContextPropertyProviderService],
+      [ExampleContextPropertyProvider],
     ),
   ],
   controllers: [ExampleController],
