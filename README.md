@@ -85,14 +85,17 @@ to:
 ```typescript
 export class ExampleController {
   @Post('/example')
-  // this will try to build all the elements of ExampleDto from the query string
-  // and then will override dto_id with body.id, if it exists
+  // This will try to build all the elements of ExampleDto from the body
+  // and then it will override "dto::child::id" with params.child_id, if it is defined
+  // and dto::id with params.id, if it is defined
+  // Note that "build" fields are excluded from "auto" build, if you want to 
+  // include auto-build as fallback too add auto: { is_fallback: true }
   async example(
     @BuildDto({
       type: ContextName.HTTP,
       target: ExampleDto,
-      build: { dto_id: ['body.id'] },
-      auto: { enabled: true, path: 'query' },
+      build: { "id": "params.id", "child.id": ['params.child_id'] },
+      auto: { enabled: true, path: 'body' },
     })
       dto: ExampleDto,
   ) {

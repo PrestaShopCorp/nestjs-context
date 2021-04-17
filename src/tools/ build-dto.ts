@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, merge, omit } from 'lodash';
 import { BuildContextFromCallbackType, BuildDtoType } from '../interfaces';
 import { Context } from '../context';
 
@@ -40,14 +40,21 @@ export const buildDto = (options: BuildDtoType, request: any) => {
     build: {},
     auto: {
       enabled: false,
+      is_fallback: false,
+      path: '',
     },
     ...options,
-  };
+  } as BuildDtoType;
+
   // build the dto
   const { type, target, auto } = options;
   let { build } = options;
   if (auto?.enabled) {
-    build = { ...autoBuild(target, auto.path), ...build };
+    const autoBuilt = autoBuild(target, auto.path);
+    build = merge(
+      auto.is_fallback ? autoBuilt : omit(autoBuilt, Object.keys(build)),
+      build,
+    );
   }
   return new Context({ type, build }, request).getAll();
 };

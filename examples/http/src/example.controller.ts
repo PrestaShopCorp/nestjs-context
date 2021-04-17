@@ -41,4 +41,20 @@ export class ExampleController {
     this.logger.log(JSON.stringify(dto));
     return 'ok';
   }
+
+  @Post('/example-3')
+  async example3(
+    @BuildDto({
+      target: ExampleDto,
+      build: { dto_id: ['body.id'], source: ['query.code'] },
+      auto: { enabled: true, is_fallback: true },
+    })
+    dto: ExampleDto,
+  ) {
+    this.logger.log(this.correlationId);
+    this.logger.log(this.metadata);
+    this.logger.log(this.ctx.getAll());
+    this.logger.log(JSON.stringify(dto));
+    return 'ok';
+  }
 }

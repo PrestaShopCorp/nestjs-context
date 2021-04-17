@@ -38,4 +38,17 @@ curl --location --request POST 'http://127.0.0.1:9191/example-2?environment=quer
 "code": "ES"
 }'
 ```
-With and without "code" data, with and without the id...
+With and without "code" body, with and without the id...
+
+To see @BuildHttpDto in action try to execute a curl like:
+```
+curl --location --request POST 'http://127.0.0.1:9191/example-3?environment=query-env'&code=FR \
+--header 'X-Correlation-Id: my-uuid' \
+--header 'Environment: header-env' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"id": "1000",
+"code": "ES"
+}'
+```
+With and without "code" query string

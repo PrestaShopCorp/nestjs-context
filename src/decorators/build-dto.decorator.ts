@@ -14,7 +14,7 @@ type BuildHttpDtoOptions = BuildHttpDtoFullOptions | BuildDtoType['build'];
 const isFullOptions = (
   args: BuildHttpDtoOptions,
 ): args is BuildHttpDtoFullOptions => {
-  return !!args.target;
+  return !!args.build;
 };
 
 const defaultAutoPath = {
@@ -25,13 +25,25 @@ const defaultAutoPath = {
 
 export const BuildDto = createParamDecorator<BuildHttpDtoOptions>(
   (args: BuildHttpDtoOptions, ctx: ExecutionContext) => {
-    // build full args (with target) from given args
-    const fullArgs = isFullOptions(args) ? args : { build: args, target: {} };
+    // build full args with type from given args
+    const type =
+      isFullOptions(args) && !!args.type ? args.type : ContextName.HTTP;
+    const fullArgs = isFullOptions(args)
+      ? args
+      : ({ build: args, type } as BuildHttpDtoFullOptions);
 
     // add defaults
-    const type = fullArgs.type ?? ContextName.HTTP;
-    const path = defaultAutoPath[type];
-    const options = merge({ auto: { enabled: false, type, path } }, fullArgs);
+    const options: BuildDtoType = merge(
+      {
+        target: {},
+        auto: {
+          enabled: false,
+          is_fallback: false,
+          path: defaultAutoPath[type],
+        },
+      },
+      fullArgs,
+    );
 
     return buildDto(options, ctx.switchToHttp().getRequest());
   },
