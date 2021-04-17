@@ -8,7 +8,7 @@ import {
   IContextPropertyProvider,
 } from './interfaces';
 import { CONTEXT_MODULE_CONFIG } from './constants';
-import { addConfigDefaults } from './tools';
+import { addContextDefaults } from './tools';
 
 @Module({})
 export class ContextModule {
@@ -37,7 +37,7 @@ export class ContextModule {
         ...contextPropertyProviders,
         {
           provide: CONTEXT_MODULE_CONFIG,
-          useValue: addDefaults ? addConfigDefaults(config) : config,
+          useValue: addDefaults ? addContextDefaults(config) : config,
         },
         {
           provide: Context,

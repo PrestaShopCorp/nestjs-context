@@ -15,7 +15,7 @@ const httpBuild = {
 // TODO JDM make it work
 const cqlBuild = {};
 
-export const addConfigDefaults = (config: ConfigType) => {
+export const addContextDefaults = (config: ConfigType) => {
   const { type, build } = config;
 
   switch (type) {

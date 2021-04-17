@@ -1,2 +1,2 @@
-export * from './add-config-defaults';
+export * from './add-context-defaults';
 export * from './ build-dto';
