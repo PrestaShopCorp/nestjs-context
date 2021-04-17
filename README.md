@@ -1,15 +1,16 @@
 # NestJs Context Module
 
-NestJs request scoped context to access execution context request information anywhere
+NestJs request scoped context to access execution context request information everywhere
 
 ## About
 
 This project includes:
 
-* A Context service that allows to access execution context request information anywhere
-* @BuildDto that allows to build data transfer objects from all the parts of the execution 
-  context request with a simple configuration
-* @CorrelationId PropertyDecorator that allows to insert the execution context request 
+* A Context service that allows to access execution-context-request customised information 
+  from your providers in the same way, no matter the execution-context type.
+* @BuildDto that allows to build data-transfer-objects from the active 
+  execution-context-request with a simple configuration
+* @CorrelationId PropertyDecorator that allows to insert the execution-context-request 
   correlation-id into class property.
 * @AddCorrelationId ClassDecorator that allows to insert the execution context request 
   correlation-id into a class property or sub-property 
