@@ -9,7 +9,7 @@ import {
 export class Context {
   constructor(
     private readonly config: ConfigType,
-    private readonly request?,
+    private readonly request?: any,
     private readonly moduleRef?: ModuleRef,
   ) {}
 

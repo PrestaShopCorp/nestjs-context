@@ -10,7 +10,7 @@
     "strictPropertyInitialization": false,
     "useDefineForClassFields": true,
     "target": "es2020",
-    "sourceMap": true,
+    "sourceMap": false,
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true

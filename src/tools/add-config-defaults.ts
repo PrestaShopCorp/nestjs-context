@@ -3,16 +3,19 @@ import {
   ContextName,
   HttpContextRequestProperty,
 } from '../interfaces';
+import { CONTEXT_CORRELATION_ID } from '../constants';
 
 // TODO JDM add stackdrive and information needed for cloud events
 const httpBuild = {
-  correlation_id: [`${HttpContextRequestProperty.HEADERS}.x-correlation-id`],
+  [CONTEXT_CORRELATION_ID]: [
+    `${HttpContextRequestProperty.HEADERS}.x-correlation-id`,
+  ],
 };
 
 // TODO JDM make it work
 const cqlBuild = {};
 
-export const addContextDefaults = (config: ConfigType) => {
+export const addConfigDefaults = (config: ConfigType) => {
   const { type, build } = config;
 
   switch (type) {
