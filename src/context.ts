@@ -1,5 +1,5 @@
 import { ModuleRef } from '@nestjs/core';
-import { get, pickBy } from 'lodash';
+import { get, pickBy, set } from 'lodash';
 import { ConfigType, IContextPropertyProvider } from './interfaces';
 import {
   isGqlContextRequestDefinition,
@@ -61,7 +61,7 @@ export class Context {
   getAll(includeNull = false) {
     const context: any = {};
     Object.keys(this.config.build).forEach((key) => {
-      context[key] = this.get(key);
+      set(context, key, this.get(key));
     });
     return includeNull
       ? context

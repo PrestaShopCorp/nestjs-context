@@ -1,4 +1,4 @@
-import { get, set } from 'lodash';
+import { get } from 'lodash';
 import { BuildContextFromCallbackType, BuildDtoType } from '../interfaces';
 import { Context } from '../context';
 
@@ -38,19 +38,16 @@ export const buildDto = (options: BuildDtoType, request: any) => {
   // add defaults
   options = {
     build: {},
-    path: '',
     auto: {
       enabled: false,
     },
     ...options,
   };
   // build the dto
-  const { type, target, path, auto } = options;
+  const { type, target, auto } = options;
   let { build } = options;
   if (auto?.enabled) {
     build = { ...autoBuild(target, auto.path), ...build };
   }
-  const dto: typeof target = new Context({ type, build }, request).getAll();
-
-  return !!path ? set({}, path, dto) : dto;
+  return new Context({ type, build }, request).getAll();
 };

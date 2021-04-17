@@ -23,7 +23,7 @@ const defaultAutoPath = {
   [ContextName.RPC]: '',
 };
 
-export const BuildDto = createParamDecorator(
+export const BuildDto = createParamDecorator<BuildHttpDtoOptions>(
   (args: BuildHttpDtoOptions, ctx: ExecutionContext) => {
     // build full args (with target) from given args
     const fullArgs = isFullOptions(args) ? args : { build: args, target: {} };
