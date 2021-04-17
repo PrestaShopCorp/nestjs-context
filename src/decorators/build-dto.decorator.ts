@@ -1,12 +1,7 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { merge } from 'lodash';
-import { buildDto } from '../tools';
-import {
-  BuildDtoType,
-  ContextName,
-  HttpContextRequestProperty,
-  OptionalType,
-} from '../interfaces';
+import { buildDto, getContextDefaultAutoBuildPath } from '../tools';
+import { BuildDtoType, ContextName, OptionalType } from '../interfaces';
 
 type BuildHttpDtoFullOptions = OptionalType<BuildDtoType, 'type'>;
 type BuildHttpDtoOptions = BuildHttpDtoFullOptions | BuildDtoType['build'];
@@ -15,12 +10,6 @@ const isFullOptions = (
   args: BuildHttpDtoOptions,
 ): args is BuildHttpDtoFullOptions => {
   return !!args.build;
-};
-
-const defaultAutoPath = {
-  [ContextName.HTTP]: HttpContextRequestProperty.BODY,
-  [ContextName.GQL]: '',
-  [ContextName.RPC]: '',
 };
 
 export const BuildDto = createParamDecorator<BuildHttpDtoOptions>(
@@ -39,7 +28,7 @@ export const BuildDto = createParamDecorator<BuildHttpDtoOptions>(
         auto: {
           enabled: false,
           is_fallback: false,
-          path: defaultAutoPath[type],
+          path: getContextDefaultAutoBuildPath(type),
         },
       },
       fullArgs,

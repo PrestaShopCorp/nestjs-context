@@ -27,19 +27,17 @@ This project includes:
 ```typescript
 import { Module, Logger } from '@nestjs/common';
 import { ContextModule } from 'nesjs-context';
-import { GetUser, GetShopId } from './context-providers';
+import { GetUser } from './context-providers';
 
 @Module({
   imports: [
     ContextModule.registerWithDefaults(
       ContextName.HTTP,
       {
-        my_value: ['my-value'],
-        host: ['headers.host'],
-        node_env: [process.env.NODE_ENV],
-        shop_id: ['headers.shop_id', GetShopId()]
-        user: [GetUser],
-        entity_id: [(req: Request) => req.body.id],
+        host: ['headers.host'], // request path
+        node_env: [process.env.NODE_ENV], // value
+        user: ['anon.', GetUser], // provider with fallback
+        entity: [(req: Request) => `${req.params.entity}_${req.params.id}`], //callback
       },
       [GetUser, GetShopId],
     ),
@@ -52,20 +50,25 @@ You could also use ```ContextModule.register```, but we recommend using the defa
 automatically add useful information to your context (fex: correlation-id). 
 Check the [defaults](src/tools/add-context-defaults.ts) for more information.
 
-### Using the @BuildDto decorator
-
-You can use @BuildDto in your controllers to build a dto using different parts of the request
-at once. The decorator receives as argument an object where the keys will be the dto properties, 
-and the values are LIFO of possible values for that property. A value can be defined with: 
+The context will be built through the definition given as second argument during the module registration;
+It is an object where the keys will be the context properties, and the values are LIFO of possible 
+values for that property. A value can be defined using:
 
 1. A custom string or numeric value (fex: 35)
-2. A path representing a path inside the request (fex: "body.id")
+2. A path inside the request (fex: "body.id")
 3. A callback that will receive the request as argument
 4. A provider implementing
    [IContextPropertyProvider](./src/interfaces/context-property-provider.interface.ts).
-   Provider::get will be called to build the value, passing request and property key as arguments.
-   
-As possible values are LIFO if the last value was null or undefined it will take the previous one, and so successively:
+   Provider::get will be called to build the value, passing request and property key as arguments to it.
+
+As possible values are LIFO, if the last value was null or undefined the context will try with the previous one, 
+and so successively
+
+### Using the @BuildDto decorator
+
+You can use @BuildDto in your controllers to build a dto using different parts of the request
+at once. The decorator receives as an argument a definition with the same format as for the context
+construction:
 
 ```typescript
 export class ExampleController {
@@ -76,10 +79,10 @@ export class ExampleController {
   }
 }
 ```
-The previous example will only work for HTTP context, but there is another version of the call that allows us 
-to: 
+The previous example will only work for HTTP execution context, but there is another version of the call that 
+allows us to: 
 - customise the context type 
-- add an "auto" build for the dto -we need to pass the target dto
+- add an "auto" build for the dto
 
 
 ```typescript
@@ -88,14 +91,12 @@ export class ExampleController {
   // This will try to build all the elements of ExampleDto from the body
   // and then it will override "dto::child::id" with params.child_id, if it is defined
   // and dto::id with params.id, if it is defined
-  // Note that "build" fields are excluded from "auto" build, if you want to 
-  // include auto-build as fallback too add auto: { is_fallback: true }
   async example(
     @BuildDto({
-      type: ContextName.HTTP,
       target: ExampleDto,
+      type: ContextName.HTTP,
       build: { "id": "params.id", "child.id": ['params.child_id'] },
-      auto: { enabled: true, path: 'body' },
+      auto: { enabled: true, path: 'body', is_fallback: true },
     })
       dto: ExampleDto,
   ) {
@@ -103,6 +104,12 @@ export class ExampleController {
   }
 }
 ```
+- By default, auto build is disabled.
+- By default, the properties declared in "build" are excluded from "auto" build, if you want to include 
+auto-build as a fallback of the "build" properties, just set ```is_fallback: true```.
+- [Check here](./src/tools/get-context-default-auto-build.path.ts) 
+  the default auto-build path for each context.
+
 
 ### Getting the correlation-id into class property 
 - Note: this decorator converts your object property into an accessor descriptor instead of 
@@ -143,6 +150,7 @@ Create an [issue](https://github.com/PrestaShopCorp/nesjs-context/issues).
 
 * Use custom param decorator instead of 
   [createParamDecorator](https://github.com/nestjs/nest/blob/master/packages/common/decorators/http/create-route-param-metadata.decorator.ts)
+  so we can remove "target" in full BuildDto calls
 * Unit Tests 
 * Add HTTP context defaults
 * CQL context
