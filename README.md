@@ -148,9 +148,6 @@ Create an [issue](https://github.com/PrestaShopCorp/nesjs-context/issues).
 
 ## WIP
 
-* Use custom param decorator instead of 
-  [createParamDecorator](https://github.com/nestjs/nest/blob/master/packages/common/decorators/http/create-route-param-metadata.decorator.ts)
-  so we can remove "target" in full BuildDto calls
 * Unit Tests 
 * Add HTTP context defaults
 * CQL context
@@ -158,3 +155,8 @@ Create an [issue](https://github.com/PrestaShopCorp/nesjs-context/issues).
 * RPC context
 * Do we need anything else to integrate with nestjs-geteventstore ? (CorrelationIdMetadata ?)
 * Only tested with Express: try it on other platforms
+
+## TODO
+* Use custom param decorator instead to receive the target as argument instead of using
+  [createParamDecorator](https://github.com/nestjs/nest/blob/master/packages/common/decorators/http/create-route-param-metadata.decorator.ts)
+  => so we can remove "target" in full BuildDto calls
