@@ -119,10 +119,11 @@ tsconfig
 ```typescript
 import { CorrelationId } from 'nestjs-context'; 
 
+@Injectable()
 export class MyProvider {
-  constructor(private readonly ctx: Context) {}
   @CorrelationId()
   private declare readonly correlationId;
+  constructor(private readonly ctx: Context) {}
 }
 ```
 
@@ -133,6 +134,7 @@ sub-properties
 ```typescript
 import { AddCorrelationId } from 'nestjs-context';
 
+@Injectable()
 @AddCorrelationId('property.correlation_id')
 export class MyProvider {
   private readonly property; // property.correlation_id will be created
