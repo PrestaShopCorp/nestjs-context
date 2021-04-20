@@ -119,7 +119,8 @@ tsconfig
 ```typescript
 import { CorrelationId } from 'nestjs-context'; 
 
-export class InternalServerErrorException {
+export class MyProvider {
+  constructor(private readonly ctx: Context) {}
   @CorrelationId()
   private declare readonly correlationId;
 }
@@ -133,8 +134,9 @@ sub-properties
 import { AddCorrelationId } from 'nestjs-context';
 
 @AddCorrelationId('property.correlation_id')
-export class ExampleClass {
+export class MyProvider {
   private readonly property; // property.correlation_id will be created
+  constructor(private readonly ctx: Context) {}
 }
 ```
 
