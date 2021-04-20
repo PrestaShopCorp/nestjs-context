@@ -5,7 +5,7 @@ import { HttpContextRequestProperty } from './http-context-request-property.enum
 
 export type BuildContextFromValueType = string | number;
 export type BuildContextFromCallbackType = (req?: any) => any;
-export type BuildContextFromProviderType = ClassProvider<IContextPropertyProvider>['useClass'];
+export type BuildContextFromProviderType = ClassProvider<IContextPropertyProvider>['provide'];
 export type BuildContextFromHttpRequestType = `${
   | HttpContextRequestProperty.BODY
   | HttpContextRequestProperty.QUERY

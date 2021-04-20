@@ -26,43 +26,51 @@ export class Context {
   }
 
   private buildContextValue(key, definition) {
-    switch (true) {
-      // from request
-      case isHttpContextRequestDefinition(definition):
-      case isGqlContextRequestDefinition(definition):
-        // TODO do we need to add a microservice definition too ?
-        return this.getRequest() ? get(this.getRequest(), definition) : null;
-
-      // from provider or custom callback
-      case typeof definition === 'function':
-        const provider = this.getProvider(definition);
-        return provider
-          ? provider.get(this.getRequest(), key)
-          : definition(this.getRequest());
-
-      // from custom number or custom string value
-      case ['number', 'string'].includes(typeof definition):
-        return definition;
-
-      // unknown
-      default:
-        return null;
+    // from request
+    if (
+      isHttpContextRequestDefinition(definition) ||
+      isGqlContextRequestDefinition(definition)
+      // TODO do we need to add a microservice definition too ?
+    ) {
+      return this.getRequest() ? get(this.getRequest(), definition) : null;
     }
+
+    // from provider
+    const provider = ['string', 'symbol', 'function'].includes(
+      typeof definition,
+    )
+      ? this.getProvider(definition)
+      : null;
+    if (!!provider && !!provider.get) {
+      return provider.get(this.getRequest(), key);
+    }
+
+    // from callback
+    if (typeof definition === 'function') {
+      return definition(this.getRequest());
+    }
+
+    // from custom number or custom string value
+    if (['number', 'string'].includes(typeof definition)) {
+      return definition;
+    }
+
+    return null;
   }
 
   get(key) {
     let value = null;
-    this.config.build[key]?.forEach((definition) => {
+    for (const definition of this.config.build[key]) {
       value = this.buildContextValue(key, definition) ?? value;
-    });
+    }
     return value;
   }
 
   getAll(includeNull = false) {
     const context: any = {};
-    Object.keys(this.config.build).forEach((key) => {
+    for (const key in this.config.build) {
       set(context, key, this.get(key));
-    });
+    }
     return includeNull
       ? context
       : pickBy(context, (ctx) => ctx !== null && ctx !== undefined);
