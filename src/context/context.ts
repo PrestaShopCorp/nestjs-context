@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { get, pickBy, set } from 'lodash';
 import { ConfigType, IContextPropertyProvider } from '../interfaces';
@@ -7,11 +8,14 @@ import {
 } from '../type-guards';
 
 export class Context {
+  private readonly logger = new Logger();
   constructor(
-    private readonly config: ConfigType,
+    private readonly build: ConfigType['build'],
     private readonly request?: any,
     private readonly moduleRef?: ModuleRef,
-  ) {}
+  ) {
+    this.logger.setContext(Context.name);
+  }
 
   private getRequest() {
     return this.request;
@@ -26,7 +30,6 @@ export class Context {
   }
 
   private buildContextValue(key, definition) {
-    // from request
     if (
       isHttpContextRequestDefinition(definition) ||
       isGqlContextRequestDefinition(definition)
@@ -60,7 +63,7 @@ export class Context {
 
   get(key) {
     let value = null;
-    for (const definition of this.config.build[key]) {
+    for (const definition of this.build[key]) {
       value = this.buildContextValue(key, definition) ?? value;
     }
     return value;
@@ -68,9 +71,10 @@ export class Context {
 
   getAll(includeNull = false) {
     const context: any = {};
-    for (const key in this.config.build) {
+    for (const key of Object.keys(this.build)) {
       set(context, key, this.get(key));
     }
+    this.logger.debug(`Got context ${JSON.stringify(context)}`);
     return includeNull
       ? context
       : pickBy(context, (ctx) => ctx !== null && ctx !== undefined);

@@ -46,7 +46,7 @@ export class ExampleController {
   async example3(
     @BuildDto({
       target: ExampleDto,
-      build: { dto_id: ['body.id'], source: ['query.code'] },
+      build: { dto_id: ['body.id'], code: ['query.code'] },
       auto: { enabled: true, is_fallback: true },
     })
     dto: ExampleDto,

@@ -7,4 +7,13 @@ describe('getContextDefaultAutoBuildPath', () => {
       HttpContextRequestProperty.BODY,
     );
   });
+  it(`gets '' as default for ${ContextName.WS} context`, () => {
+    expect(getContextDefaultAutoBuildPath(ContextName.WS)).toBe('');
+  });
+  it(`gets '' as default for ${ContextName.RPC} context`, () => {
+    expect(getContextDefaultAutoBuildPath(ContextName.RPC)).toBe('');
+  });
+  it(`gets '' as default for ${ContextName.GQL} context`, () => {
+    expect(getContextDefaultAutoBuildPath(ContextName.GQL)).toBe('');
+  });
 });

@@ -37,7 +37,7 @@ export class ContextModule {
             config: ConfigType,
             moduleRef: ModuleRef,
             request = undefined,
-          ) => new Context(config, request, moduleRef),
+          ) => new Context(config.build, request, moduleRef),
           inject: [
             CONTEXT_MODULE_CONFIG,
             ModuleRef,

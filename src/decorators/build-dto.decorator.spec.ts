@@ -17,6 +17,11 @@ describe('@BuildDto', () => {
       type: ContextName.HTTP,
       build: {},
     });
+    expect(buildDtoFullOptions({ target: {}, build: {} })).toStrictEqual({
+      target: {},
+      type: ContextName.HTTP,
+      build: {},
+    });
     expect(buildDtoFullOptions(fullOptions)).toStrictEqual(fullOptions);
   });
   it('adds some default options and calls the dto-builder tool', () => {

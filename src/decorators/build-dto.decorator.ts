@@ -38,7 +38,7 @@ export const buildDtoFullOptions = (
   const type =
     isFullOptions(options) && !!options.type ? options.type : ContextName.HTTP;
   return isFullOptions(options)
-    ? options
+    ? { type, ...options }
     : ({ type, build: options } as BuildDtoFullOptions);
 };
 
