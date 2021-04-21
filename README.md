@@ -111,7 +111,7 @@ export class ExampleController {
 - By default, auto build is disabled.
 - By default, the properties declared in "build" are excluded from "auto" build, if you want to include 
 auto-build as a fallback of the "build" properties, just set ```is_fallback: true```.
-- [Check here](src/context/get-context-default-auto-build.path.ts) 
+- [Check here](src/context/get-context-default-auto-build-path.ts) 
   the default auto-build path for each context.
 
 
