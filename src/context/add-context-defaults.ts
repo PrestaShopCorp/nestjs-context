@@ -4,10 +4,7 @@ import {
   HttpContextRequestProperty,
 } from '../interfaces';
 import { CONTEXT_CORRELATION_ID, HEADER_CORRELATION_ID } from '../constants';
-import * as short from 'short-uuid';
-
-const alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';
-const generateCorelationId = () => short(alphabet).generate();
+import { correlationIdGenerator } from '../tools';
 
 // TODO JDM add stackdrive and information needed for cloud events
 
@@ -15,7 +12,7 @@ const createHttpContextDefaults = (config: ConfigType) => {
   const { correlation_id } = config;
   return {
     [CONTEXT_CORRELATION_ID]: [
-      correlation_id?.generator ?? generateCorelationId,
+      correlation_id?.generator ?? correlationIdGenerator,
       `${HttpContextRequestProperty.HEADERS}.${
         correlation_id?.header ?? HEADER_CORRELATION_ID
       }`,
