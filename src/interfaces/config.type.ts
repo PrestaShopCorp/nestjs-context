@@ -24,4 +24,8 @@ export type ConfigType = CommonConfig &
         type: ContextName.RPC;
         build: BuildContextType<ContextName.RPC>;
       }
+    | {
+        type: ContextName.WS;
+        build: BuildContextType<ContextName.WS>;
+      }
   );

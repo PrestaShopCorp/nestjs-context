@@ -1,10 +1,9 @@
-import { Module, Provider, Scope } from '@nestjs/common';
+import { Module, Scope } from '@nestjs/common';
 import { APP_INTERCEPTOR, ModuleRef, REQUEST } from '@nestjs/core';
 import { CONTEXT } from '@nestjs/graphql';
-import { Context } from './services';
+import { addContextDefaults, Context } from './context';
 import { ConfigType, ContextName } from './interfaces';
 import { CONTEXT_MODULE_CONFIG } from './constants';
-import { addContextDefaults } from './tools';
 import { CorrelationIdInterceptor } from './interceptors';
 
 @Module({})

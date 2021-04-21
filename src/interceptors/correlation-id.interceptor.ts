@@ -12,7 +12,7 @@ import {
   CONTEXT_MODULE_CONFIG,
   HEADER_CORRELATION_ID,
 } from '../constants';
-import { Context } from '../services';
+import { Context } from '../context';
 
 @Injectable()
 export class CorrelationIdInterceptor implements NestInterceptor {

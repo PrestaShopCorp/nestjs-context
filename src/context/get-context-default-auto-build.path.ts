@@ -5,6 +5,7 @@ export const getContextDefaultAutoBuildPath = (type: ContextName) => {
     [ContextName.HTTP]: HttpContextRequestProperty.BODY,
     [ContextName.GQL]: '',
     [ContextName.RPC]: '',
+    [ContextName.WS]: '',
   };
   return defaults[type];
 };

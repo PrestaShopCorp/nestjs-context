@@ -50,7 +50,7 @@ Notice that ```ContextModule.registerWithDefaults(config)``` is just an alias of
 default context information is included or not; it is recommended to use the defaults
 as they will automatically add useful information to your context (fex: correlation_id).
 
-- Check the [defaults](src/tools/add-context-defaults.ts) for further information about defaults
+- Check the [defaults](src/context/add-context-defaults.ts) for further information about defaults
 - Check all the [config options](./src/interfaces/config.type.ts) for further information about available 
   configurations
 
@@ -111,7 +111,7 @@ export class ExampleController {
 - By default, auto build is disabled.
 - By default, the properties declared in "build" are excluded from "auto" build, if you want to include 
 auto-build as a fallback of the "build" properties, just set ```is_fallback: true```.
-- [Check here](./src/tools/get-context-default-auto-build.path.ts) 
+- [Check here](src/context/get-context-default-auto-build.path.ts) 
   the default auto-build path for each context.
 
 
