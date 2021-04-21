@@ -1,10 +1,10 @@
 import { ModuleRef } from '@nestjs/core';
 import { get, pickBy, set } from 'lodash';
-import { ConfigType, IContextPropertyProvider } from './interfaces';
+import { ConfigType, IContextPropertyProvider } from '../interfaces';
 import {
   isGqlContextRequestDefinition,
   isHttpContextRequestDefinition,
-} from './type-guards';
+} from '../type-guards';
 
 export class Context {
   constructor(

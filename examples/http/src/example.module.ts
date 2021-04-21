@@ -6,9 +6,9 @@ import { ExampleContextPropertyProvider } from './example-context-property.provi
 
 @Module({
   imports: [
-    ContextModule.registerWithDefaults(
-      ContextName.HTTP,
-      {
+    ContextModule.registerWithDefaults({
+      type: ContextName.HTTP,
+      build: {
         from_value: ['my-value'],
         from_header: ['headers.host'],
         from_value_or_query_or_header: [
@@ -19,8 +19,8 @@ import { ExampleContextPropertyProvider } from './example-context-property.provi
         from_provider: [ExampleContextPropertyProvider],
         from_callback: [(req: Request) => `callback:${req.body.id}`],
       },
-      [ExampleContextPropertyProvider],
-    ),
+      providers: [ExampleContextPropertyProvider],
+    }),
   ],
   controllers: [ExampleController],
 })

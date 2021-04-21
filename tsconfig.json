@@ -4,7 +4,7 @@
     "moduleResolution": "node",
     "declaration": true,
     "removeComments": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noLib": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -17,5 +17,5 @@
   "include": [
     "src/**/*.ts"
   ],
-  "exclude": ["node_modules", "**/*.spec.ts", "dist", "index.*"]
+  "exclude": ["node_modules", "dist", "index.*"]
 }

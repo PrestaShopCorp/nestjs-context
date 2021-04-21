@@ -23,7 +23,6 @@ This project includes:
 
 ## Basic Usage
 
-
 ```typescript
 import { Module, Logger } from '@nestjs/common';
 import { ContextModule } from 'nesjs-context';
@@ -31,28 +30,33 @@ import { GetUser } from './context-providers';
 
 @Module({
   imports: [
-    ContextModule.registerWithDefaults(
-      ContextName.HTTP,
-      {
+    ContextModule.registerWithDefaults({
+      type: ContextName.HTTP,
+      build: {
         host: ['headers.host'], // request path
         node_env: [process.env.NODE_ENV], // value
         user: ['anon.', GetUser], // provider with fallback
         entity: [(req: Request) => `${req.params.entity}_${req.params.id}`], //callback
       },
-      [GetUser, GetShopId],
-    ),
+      providers: [GetUser, GetShopId],
+    }),
   ],
 })
 export class ExampleModule {}
 ```
 
-You could also use ```ContextModule.register```, but we recommend using the defaults as they will
-automatically add useful information to your context (fex: correlation-id). 
-Check the [defaults](src/tools/add-context-defaults.ts) for more information.
+Notice that ```ContextModule.registerWithDefaults(config)``` is just an alias of
+```ContextModule.register(config, true)```, where the second arg indicates whether 
+default context information is included or not; it is recommended to use the defaults
+as they will automatically add useful information to your context (fex: correlation_id).
 
-The context will be built through the definition given as second argument during the module registration;
-It is an object where the keys will be the context properties, and the values are LIFO of possible 
-values for that property. A value can be defined using:
+- Check the [defaults](src/tools/add-context-defaults.ts) for further information about defaults
+- Check all the [config options](./src/interfaces/config.type.ts) for further information about available 
+  configurations
+
+The context object uses the "build" definition from the config to pick elements from 
+the request; it is an object where the keys are the resulting context properties, and the 
+values are LIFO of possible values for that property. A value can be defined using:
 
 1. A custom string or numeric value (fex: 35)
 2. A path inside the request (fex: "body.id")

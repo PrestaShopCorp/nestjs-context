@@ -1,40 +1,32 @@
 import { Module, Provider, Scope } from '@nestjs/common';
-import { ModuleRef, REQUEST } from '@nestjs/core';
+import { APP_INTERCEPTOR, ModuleRef, REQUEST } from '@nestjs/core';
 import { CONTEXT } from '@nestjs/graphql';
-import { Context } from './context';
-import {
-  ConfigType,
-  ContextName,
-  IContextPropertyProvider,
-} from './interfaces';
+import { Context } from './services';
+import { ConfigType, ContextName } from './interfaces';
 import { CONTEXT_MODULE_CONFIG } from './constants';
 import { addContextDefaults } from './tools';
+import { CorrelationIdInterceptor } from './interceptors';
 
 @Module({})
 export class ContextModule {
-  static registerWithDefaults(
-    type: ConfigType['type'],
-    build: ConfigType['build'] = {},
-    contextPropertyProviders?: Provider<IContextPropertyProvider>[],
-  ) {
-    return ContextModule.register(type, build, contextPropertyProviders, true);
+  static registerWithDefaults(config: ConfigType) {
+    return ContextModule.register(config, true);
   }
-  static register(
-    type: ConfigType['type'],
-    build: ConfigType['build'],
-    contextPropertyProviders: Provider<IContextPropertyProvider>[] = [],
-    addDefaults = false,
-  ) {
-    const config = { type, build };
+  static register(config: ConfigType, addDefaults = false) {
+    const { type, providers } = config;
     const requestProviders = {
       [ContextName.HTTP]: REQUEST,
       [ContextName.GQL]: CONTEXT,
     };
-
     return {
       module: ContextModule,
       providers: [
-        ...contextPropertyProviders,
+        ...providers,
+        {
+          provide: APP_INTERCEPTOR,
+          scope: Scope.REQUEST,
+          useClass: CorrelationIdInterceptor,
+        },
         {
           provide: CONTEXT_MODULE_CONFIG,
           useValue: addDefaults ? addContextDefaults(config) : config,

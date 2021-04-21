@@ -1,6 +1,6 @@
 import { get, merge, omit } from 'lodash';
 import { BuildContextFromCallbackType, BuildDtoType } from '../interfaces';
-import { Context } from '../context';
+import { Context } from '../services';
 
 const autoBuildDtoPropertyCallback = (path: string) => (
   req: Record<string, any>,

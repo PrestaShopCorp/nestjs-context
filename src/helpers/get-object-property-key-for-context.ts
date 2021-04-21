@@ -1,5 +1,5 @@
 import { InternalServerErrorException } from '@nestjs/common';
-import { Context } from '../context';
+import { Context } from '../services';
 
 export const getObjectPropertyKeyForContext = ($this) => {
   let contextPropertyKey = Object.getOwnPropertyNames($this)
