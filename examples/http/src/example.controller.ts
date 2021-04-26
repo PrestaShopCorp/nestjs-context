@@ -31,7 +31,7 @@ export class ExampleController {
     @BuildDto({
       target: ExampleDto,
       build: { dto_id: ['body.id'] },
-      auto: { enabled: true },
+      auto: { enabled: true, blocklist: ['dto_id'] },
     })
     dto: ExampleDto,
   ) {
@@ -47,7 +47,7 @@ export class ExampleController {
     @BuildDto({
       target: ExampleDto,
       build: { dto_id: ['body.id'], code: ['query.code'] },
-      auto: { enabled: true, is_fallback: true },
+      auto: { enabled: true },
     })
     dto: ExampleDto,
   ) {

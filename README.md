@@ -60,13 +60,15 @@ values are LIFO of possible values for that property. A value can be defined usi
 
 1. A custom string or numeric value (fex: 35)
 2. A path inside the request (fex: "body.id")
-3. A callback that will receive the request as argument
+3. A callback that will receive the request and the setValues as arguments
 4. A provider implementing
    [IContextPropertyProvider](./src/interfaces/context-property-provider.interface.ts).
-   Provider::get will be called to build the value, passing request and property key as arguments to it.
+   Provider::get will be called to build the value, passing request, property key and setValues as arguments to it
 
 As possible values are LIFO, if the last value was null or undefined the context will try with the previous one, 
-and so successively
+and so successively. You can manually set values into context calling "Context::setValue": set values will take 
+precedence over any other declared possible values. You can also set a value for the current request using the 
+last argument (setValues, which is a Map) passed to callbacks (3.) and providers (4.).
 
 ### Using the @BuildDto decorator
 

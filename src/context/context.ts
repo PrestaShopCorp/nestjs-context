@@ -8,6 +8,7 @@ import {
 } from '../type-guards';
 
 export class Context {
+  private readonly values = new Map<string | symbol, any>();
   private readonly logger = new Logger();
   constructor(
     private readonly build: ConfigType['build'],
@@ -15,6 +16,11 @@ export class Context {
     private readonly moduleRef?: ModuleRef,
   ) {
     this.logger.setContext(Context.name);
+  }
+
+  setValue(key: string | symbol, value: any) {
+    this.values[key] = value;
+    return this;
   }
 
   private getRequest() {
@@ -30,6 +36,12 @@ export class Context {
   }
 
   private buildContextValue(key, definition) {
+    // context set value
+    if (typeof this.values[key] !== 'undefined') {
+      return this.values[key];
+    }
+
+    // from request
     if (
       isHttpContextRequestDefinition(definition) ||
       isGqlContextRequestDefinition(definition)
@@ -45,12 +57,12 @@ export class Context {
       ? this.getProvider(definition)
       : null;
     if (!!provider && !!provider.get) {
-      return provider.get(this.getRequest(), key);
+      return provider.get(this.getRequest(), key, this.values);
     }
 
     // from callback
     if (typeof definition === 'function') {
-      return definition(this.getRequest());
+      return definition(this.getRequest(), this.values);
     }
 
     // from custom number or custom string value

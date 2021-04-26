@@ -1,4 +1,7 @@
-import { BuildContextType } from './build-context.type';
+import {
+  BuildContextFromCallbackType,
+  BuildContextType,
+} from './build-context.type';
 import { ContextName } from './context-name.enum';
 import { Provider } from '@nestjs/common';
 import { IContextPropertyProvider } from './context-property-provider.interface';
@@ -6,7 +9,7 @@ import { IContextPropertyProvider } from './context-property-provider.interface'
 type CommonConfig = {
   providers?: Provider<IContextPropertyProvider>[];
   correlation_id?: {
-    generator?: () => string;
+    generator?: BuildContextFromCallbackType;
     header?: string;
   };
 };

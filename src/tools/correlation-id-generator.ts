@@ -1,5 +1,12 @@
 import * as short from 'short-uuid';
+import { BuildContextFromCallbackType } from '../interfaces';
 
-export const correlationIdGenerator = (
-  alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
-) => short(alphabet).generate();
+const alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';
+export const correlationIdGenerator: BuildContextFromCallbackType = (
+  key: string | symbol,
+) => (req, setValues) => {
+  if (!setValues.get(key)) {
+    setValues.set(key, short(alphabet).generate());
+  }
+  return setValues.get(key);
+};

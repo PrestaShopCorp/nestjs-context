@@ -12,7 +12,8 @@ const createHttpContextDefaults = (config: ConfigType) => {
   const { correlation_id } = config;
   return {
     [CONTEXT_CORRELATION_ID]: [
-      correlation_id?.generator ?? correlationIdGenerator,
+      correlation_id?.generator ??
+        correlationIdGenerator(CONTEXT_CORRELATION_ID),
       `${HttpContextRequestProperty.HEADERS}.${
         correlation_id?.header ?? HEADER_CORRELATION_ID
       }`,

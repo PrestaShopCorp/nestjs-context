@@ -1,13 +1,16 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { addAutomaticBuild } from '../tools';
 import { Context, getContextRequest } from '../context';
-import { BuildDtoType, ContextName } from '../interfaces';
+import { BuildDtoType, ContextName, OptionalType } from '../interfaces';
 
-type FullOptions = BuildDtoType;
 type EasyOptions = BuildDtoType['build'];
-type BuildDtoOptions = FullOptions | EasyOptions;
+type BuildDtoDecoratorOptions =
+  | OptionalType<BuildDtoType, 'type'>
+  | EasyOptions;
 
-const hasEasyOptions = (args: BuildDtoOptions): args is EasyOptions => {
+const hasEasyOptions = (
+  args: BuildDtoDecoratorOptions,
+): args is EasyOptions => {
   return !args.build;
 };
 
@@ -24,15 +27,17 @@ export const buildDtoFactory = (
   ).getAll();
 };
 
-export const buildDtoFullOptions = (options: BuildDtoOptions): BuildDtoType => {
+export const buildDtoFullOptions = (
+  options: BuildDtoDecoratorOptions,
+): BuildDtoType => {
   const type = options.type ?? ContextName.HTTP;
   return hasEasyOptions(options)
-    ? ({ type, build: options } as FullOptions)
-    : { type, ...options };
+    ? ({ type, build: options } as BuildDtoType)
+    : ({ type, ...options } as BuildDtoType);
 };
 
-export const BuildDto = createParamDecorator<BuildDtoOptions>(
-  (options: BuildDtoOptions, ctx: ExecutionContext) => {
+export const BuildDto = createParamDecorator<BuildDtoDecoratorOptions>(
+  (options: BuildDtoDecoratorOptions, ctx: ExecutionContext) => {
     const fullOptions = buildDtoFullOptions(options);
     return buildDtoFactory(
       fullOptions,
