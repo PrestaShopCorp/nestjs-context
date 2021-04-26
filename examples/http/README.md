@@ -28,7 +28,7 @@ Stop the server, re-start with ```NODE_ENV=development yarn start``` and retry
 the previous curls
 
 
-To see @BuildHttpDto in action try to execute a curl like:
+To see @BuildDto in action try to execute a curl like:
 ```
 curl --location --request POST 'http://127.0.0.1:9191/example-2?environment=query-env' \
 --header 'X-Correlation-Id: my-uuid' \
@@ -41,7 +41,7 @@ curl --location --request POST 'http://127.0.0.1:9191/example-2?environment=quer
 ```
 With and without "code" body, with and without the id...
 
-To see @BuildHttpDto in action try to execute a curl like:
+To see @BuildDto in action try to execute a curl like:
 ```
 curl --location --request POST 'http://127.0.0.1:9191/example-3?environment=query-env'&code=FR \
 --header 'X-Correlation-Id: my-uuid' \

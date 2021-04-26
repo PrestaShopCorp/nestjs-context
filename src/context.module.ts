@@ -33,11 +33,8 @@ export class ContextModule {
         {
           provide: Context,
           scope: Scope.REQUEST,
-          useFactory: (
-            config: ConfigType,
-            moduleRef: ModuleRef,
-            request = undefined,
-          ) => new Context(config.build, request, moduleRef),
+          useFactory: (config: ConfigType, moduleRef: ModuleRef, request) =>
+            new Context(config.build, request, moduleRef),
           inject: [
             CONTEXT_MODULE_CONFIG,
             ModuleRef,

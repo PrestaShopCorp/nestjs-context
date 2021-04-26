@@ -1,2 +1,2 @@
-export * from './dto-builder';
+export * from './add-automatic-build';
 export * from './correlation-id-generator';

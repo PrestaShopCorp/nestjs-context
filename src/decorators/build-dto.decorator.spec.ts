@@ -1,9 +1,4 @@
-import { merge } from 'lodash';
-import {
-  buildDtoDefaultOptions,
-  buildDtoFactory,
-  buildDtoFullOptions,
-} from './build-dto.decorator';
+import { buildDtoFactory, buildDtoFullOptions } from './build-dto.decorator';
 import { ContextName } from '../interfaces';
 
 describe('@BuildDto', () => {
@@ -17,19 +12,47 @@ describe('@BuildDto', () => {
       type: ContextName.HTTP,
       build: {},
     });
-    expect(buildDtoFullOptions({ target: {}, build: {} })).toStrictEqual({
-      target: {},
-      type: ContextName.HTTP,
-      build: {},
-    });
+    expect(buildDtoFullOptions({ target: {}, build: {} } as any)).toStrictEqual(
+      {
+        target: {},
+        type: ContextName.HTTP,
+        build: {},
+      },
+    );
     expect(buildDtoFullOptions(fullOptions)).toStrictEqual(fullOptions);
   });
-  it('adds some default options and calls the dto-builder tool', () => {
-    const builder = jest.fn((args: any) => 'ok');
-    buildDtoFactory(fullOptions, {}, builder);
-    expect(builder).toHaveBeenCalledWith(
-      merge(buildDtoDefaultOptions(fullOptions.type), fullOptions),
-      {},
+  it('builds a dto from the request and custom parameters', () => {
+    const builder = jest.fn(() => ({})) as any;
+    const dto = buildDtoFactory(
+      {
+        ...fullOptions,
+        build: { test: ['headers.test'], custom: ['custom'] },
+        auto: { enabled: false },
+      },
+      { headers: { test: 1 } },
+      builder,
     );
+    expect(dto).toStrictEqual({ test: 1, custom: 'custom' });
+    expect(builder).not.toHaveBeenCalled();
+  });
+  it('builds -automatically- a dto from the request if auto was enabled, even if build definition is not defined', () => {
+    const builder = jest.fn(() => ({
+      test: ['headers.test'],
+    })) as any;
+    expect(
+      buildDtoFactory(
+        { type: ContextName.HTTP, target: {}, auto: { enabled: true } },
+        { headers: { test: 1 } },
+        builder,
+      ),
+    ).toStrictEqual({ test: 1 });
+    expect(builder).toHaveBeenCalled();
+  });
+  it('builds an empty dto for empty build definition if auto is disabled', () => {
+    const builder = jest.fn(() => ({})) as any;
+    expect(
+      buildDtoFactory(fullOptions, { headers: { test: 1 } }, builder),
+    ).toStrictEqual({});
+    expect(builder).not.toHaveBeenCalled();
   });
 });

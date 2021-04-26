@@ -1,5 +1,5 @@
 export * from './build-context.type';
-export * from './build-dto-type';
+export * from './build-dto.type';
 export * from './config.type';
 export * from './context-name.enum';
 export * from './context-property-provider.interface';

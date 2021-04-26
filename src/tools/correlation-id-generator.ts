@@ -1,4 +1,5 @@
 import * as short from 'short-uuid';
 
-const alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';
-export const correlationIdGenerator = () => short(alphabet).generate();
+export const correlationIdGenerator = (
+  alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
+) => short(alphabet).generate();

@@ -116,6 +116,7 @@ auto-build as a fallback of the "build" properties, just set ```is_fallback: tru
 
 
 ### Getting the correlation-id into class property 
+- Note: you need to add Context as DI to use this decorator
 - Note: this decorator converts your object property into an accessor descriptor instead of 
 data descriptor.
 - Note: you must use "declare" if you have declared "useDefineForClassFields": true in your
@@ -132,9 +133,9 @@ export class MyProvider {
 ```
 
 ### Getting the correlation-id into class sub-property
+- Note: you need to add Context as DI to use this decorator
 - Note: this decorator converts your object property into an accessor descriptor instead of
-data descriptor, and it will use another data descriptor as backup for the rest of 
-sub-properties
+data descriptor, and it will use another data descriptor as backup for the rest of sub-properties
 ```typescript
 import { AddCorrelationId } from 'nestjs-context';
 
@@ -164,7 +165,7 @@ Create an [issue](https://github.com/PrestaShopCorp/nesjs-context/issues).
 * Do we need anything else to integrate with nestjs-geteventstore ? (CorrelationIdMetadata ?)
 * Only tested with Express: try it on other platforms
 
-## TODO
+## TO ANALYSE
 * Use custom param decorator instead to receive the target as argument instead of using
   [createParamDecorator](https://github.com/nestjs/nest/blob/master/packages/common/decorators/http/create-route-param-metadata.decorator.ts)
   => so we can remove "target" in full BuildDto calls

@@ -3,6 +3,13 @@ import { cloneDeep, set } from 'lodash';
 import { CONTEXT_CORRELATION_ID } from '../index';
 import { getObjectPropertyKeyForContext } from '../helpers';
 
+/**
+ * Note: this decorator converts your object property into an accessor descriptor instead
+ * of data descriptor and it will use another data descriptor as backup for the rest
+ * of sub-properties
+ * @param path
+ * @constructor
+ */
 export const AddCorrelationIdDecorator = (path: string) => <
   T extends { new (...args: any[]): any }
 >(

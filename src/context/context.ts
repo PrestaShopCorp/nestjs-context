@@ -71,6 +71,9 @@ export class Context {
 
   getAll(includeNull = false) {
     const context: any = {};
+    if (!this.build) {
+      return context;
+    }
     for (const key of Object.keys(this.build)) {
       set(context, key, this.get(key));
     }

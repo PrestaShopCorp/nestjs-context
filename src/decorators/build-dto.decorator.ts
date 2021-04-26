@@ -1,45 +1,34 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { merge } from 'lodash';
-import { dtoBuilder } from '../tools';
-import { getContextDefaultAutoBuildPath, getContextRequest } from '../context';
-import { BuildDtoType, ContextName, OptionalType } from '../interfaces';
+import { addAutomaticBuild } from '../tools';
+import { Context, getContextRequest } from '../context';
+import { BuildDtoType, ContextName } from '../interfaces';
 
-type BuildDtoFullOptions = OptionalType<BuildDtoType, 'type'>;
-type BuildDtoOptions = BuildDtoFullOptions | BuildDtoType['build'];
+type FullOptions = BuildDtoType;
+type EasyOptions = BuildDtoType['build'];
+type BuildDtoOptions = FullOptions | EasyOptions;
 
-const isFullOptions = (args: BuildDtoOptions): args is BuildDtoFullOptions => {
-  return !!args.build;
+const hasEasyOptions = (args: BuildDtoOptions): args is EasyOptions => {
+  return !args.build;
 };
-
-export const buildDtoDefaultOptions = (type: ContextName) => ({
-  target: {},
-  auto: {
-    enabled: false,
-    is_fallback: false,
-    path: getContextDefaultAutoBuildPath(type),
-  },
-});
 
 export const buildDtoFactory = (
-  options: BuildDtoFullOptions,
+  options: BuildDtoType,
   request: any,
-  builder = dtoBuilder,
+  addAuto = addAutomaticBuild,
 ) => {
-  const optionsWithDefaults: BuildDtoType = merge(
-    buildDtoDefaultOptions(options.type),
-    options,
-  );
-  return builder(optionsWithDefaults, request);
+  const { target, auto = { enabled: false }, build = {} } = options;
+  const { enabled: isAuto = false } = auto;
+  return new Context(
+    isAuto && !!target ? addAuto(build, options) : build,
+    request,
+  ).getAll();
 };
 
-export const buildDtoFullOptions = (
-  options: BuildDtoOptions,
-): BuildDtoFullOptions => {
-  const type =
-    isFullOptions(options) && !!options.type ? options.type : ContextName.HTTP;
-  return isFullOptions(options)
-    ? { type, ...options }
-    : ({ type, build: options } as BuildDtoFullOptions);
+export const buildDtoFullOptions = (options: BuildDtoOptions): BuildDtoType => {
+  const type = options.type ?? ContextName.HTTP;
+  return hasEasyOptions(options)
+    ? ({ type, build: options } as FullOptions)
+    : { type, ...options };
 };
 
 export const BuildDto = createParamDecorator<BuildDtoOptions>(
