@@ -12,7 +12,7 @@ export class ContextModule {
     return ContextModule.register(config, true);
   }
   static register(config: ConfigType, addDefaults = false) {
-    const { type, providers } = config;
+    const { type, providers = [] } = config;
     const requestProviders = {
       [ContextName.HTTP]: REQUEST,
       [ContextName.GQL]: CONTEXT,

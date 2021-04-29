@@ -21,7 +21,7 @@ describe('getContextRequest', () => {
   });
   it(`returns request for ${ContextName.GQL} context`, () => {
     expect(getContextRequest(ContextName.GQL, executionContext)).toBe(
-      'request',
+      'data-ws',
     );
   });
   it(`returns data for ${ContextName.WS} context`, () => {

@@ -42,7 +42,7 @@ describe('addAutomaticBuild', () => {
     ).toBe('test');
   });
   it(`adds fallback for already declared build properties`, () => {
-    const path = 'test';
+    const path = 'req.test';
     const received = addAutomaticBuild(
       { property: ['customValue'] },
       { type: ContextName.HTTP, target: Target, auto: { enabled: true, path } },

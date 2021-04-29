@@ -33,7 +33,7 @@ import { GetUser } from './context-providers';
     ContextModule.registerWithDefaults({
       type: ContextName.HTTP,
       build: {
-        host: ['headers.host'], // request path
+        host: ['req.headers.host'], // request path
         node_env: [process.env.NODE_ENV], // value
         user: ['anon.', GetUser], // provider with fallback
         entity: [(req: Request) => `${req.params.entity}_${req.params.id}`], //callback
@@ -59,7 +59,7 @@ the request; it is an object where the keys are the resulting context properties
 values are LIFO of possible values for that property. A value can be defined using:
 
 1. A custom string or numeric value (fex: 35)
-2. A path inside the request (fex: "body.id")
+2. A path inside the request, using "req" as first key (fex: "req.body.id")
 3. A callback that will receive the request and the setValues as arguments
 4. A provider implementing
    [IContextPropertyProvider](./src/interfaces/context-property-provider.interface.ts).
@@ -80,7 +80,7 @@ construction:
 export class ExampleController {
   // if body.id is undefined or null, dto_id will be set to query.id; 
   // if both are null or undefined, it will be set to "EMPTY"
-  async example1(@BuildDto({dto_id: ['EMPTY', 'query.id', 'body.id']}) dto: ExampleDto) {
+  async example1(@BuildDto({dto_id: ['EMPTY', 'req.query.id', 'req.body.id']}) dto: ExampleDto) {
     // your code
   }
 }
@@ -101,7 +101,7 @@ export class ExampleController {
     @BuildDto({
       target: ExampleDto,
       type: ContextName.HTTP,
-      build: { "id": "params.id", "child.id": ['params.child_id'] },
+      build: { "id": "req.params.id", "child.id": ['req.params.child_id'] },
       auto: { enabled: true, path: 'body', is_fallback: true },
     })
       dto: ExampleDto,
@@ -113,9 +113,8 @@ export class ExampleController {
 - By default, auto build is disabled.
 - By default, the properties declared in "build" are excluded from "auto" build, if you want to include 
 auto-build as a fallback of the "build" properties, just set ```is_fallback: true```.
-- [Check here](src/context/get-context-default-auto-build-path.ts) 
-  the default auto-build path for each context.
-
+- Every context has a default request "path" ([more info here](src/context/get-context-default-auto-build-path.ts))
+to look for the auto-built properties. Note that here it is not necessary to include the "req." prefix.
 
 ### Getting the correlation-id into class property 
 - Note: you need to add Context as DI to use this decorator
@@ -165,7 +164,7 @@ Create an [issue](https://github.com/PrestaShopCorp/nesjs-context/issues).
 * Processors ? (setCorrelationId ?)
 * RPC context
 * Do we need anything else to integrate with nestjs-geteventstore ? (CorrelationIdMetadata ?)
-* Only tested with Express: try it on other platforms
+* Created for Express: adapt it to work on other platforms
 
 ## TO ANALYSE
 * Use custom param decorator instead to receive the target as argument instead of using

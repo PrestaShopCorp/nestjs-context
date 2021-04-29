@@ -17,8 +17,8 @@ export class ExampleController {
 
   constructor(private readonly ctx: Context) {}
 
-  @Post('/example')
-  async example1(@BuildDto({ dto_id: ['body.id'] }) dto: ExampleDto) {
+  @Post('/example-1')
+  async example1(@BuildDto({ dto_id: ['req.body.id'] }) dto: ExampleDto) {
     this.logger.log(this.correlationId);
     this.logger.log(this.metadata);
     this.logger.log(this.ctx.getAll());
@@ -30,7 +30,7 @@ export class ExampleController {
   async example2(
     @BuildDto({
       target: ExampleDto,
-      build: { dto_id: ['body.id'] },
+      build: { dto_id: ['req.body.id'] },
       auto: { enabled: true, blocklist: ['dto_id'] },
     })
     dto: ExampleDto,
@@ -46,7 +46,7 @@ export class ExampleController {
   async example3(
     @BuildDto({
       target: ExampleDto,
-      build: { dto_id: ['body.id'], code: ['query.code'] },
+      build: { dto_id: ['req.body.id'], code: ['req.query.code'] },
       auto: { enabled: true },
     })
     dto: ExampleDto,

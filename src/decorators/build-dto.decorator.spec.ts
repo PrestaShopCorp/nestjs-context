@@ -26,7 +26,7 @@ describe('@BuildDto', () => {
     const dto = buildDtoFactory(
       {
         ...fullOptions,
-        build: { test: ['headers.test'], custom: ['custom'] },
+        build: { test: ['req.headers.test'], custom: ['custom'] },
         auto: { enabled: false },
       },
       { headers: { test: 1 } },
@@ -37,7 +37,7 @@ describe('@BuildDto', () => {
   });
   it('builds -automatically- a dto from the request if auto was enabled, even if build definition is not defined', () => {
     const builder = jest.fn(() => ({
-      test: ['headers.test'],
+      test: ['req.headers.test'],
     })) as any;
     expect(
       buildDtoFactory(

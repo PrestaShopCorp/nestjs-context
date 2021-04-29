@@ -19,11 +19,11 @@ describe('Context', () => {
   };
   const build = {
     value: ['value-fallback', 'value'],
-    fallback: ['fallback', 'headers.fallback'],
-    header: ['headers.header'],
+    fallback: ['fallback', 'req.headers.fallback'],
+    header: ['req.headers.header'],
     provider: [Provider],
     callback: [() => 'callback'],
-    nullish: ['headers.null'],
+    nullish: ['req.headers.null'],
   };
   const config: ConfigType = {
     type: ContextName.HTTP,

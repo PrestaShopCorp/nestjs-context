@@ -6,7 +6,7 @@ Execute yarn:start at this folder to start the server
 
 To see the context in action try to execute a curl like: 
 ```
-curl --location --request POST 'http://127.0.0.1:9191/example?environment=query-env' \
+curl --location --request POST 'http://127.0.0.1:9191/example-1?environment=query-env' \
 --header 'X-Correlation-Id: my-uuid' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -15,7 +15,7 @@ curl --location --request POST 'http://127.0.0.1:9191/example?environment=query-
 ```
 Try to execute a curl like:
 ```
-curl --location --request POST 'http://127.0.0.1:9191/example' \
+curl --location --request POST 'http://127.0.0.1:9191/example-1' \
 --header 'X-Correlation-Id: my-uuid' \
 --header 'Environment: header-env' \
 --header 'Content-Type: application/json' \

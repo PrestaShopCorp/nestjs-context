@@ -57,7 +57,10 @@ export const addAutomaticBuild = (
   const { enabled, blocklist, path } = auto;
 
   if (!!enabled && !!target) {
-    const autoBuilt = getContextPropertiesBuildFromRequestPath(target, path);
+    const autoBuilt = getContextPropertiesBuildFromRequestPath(
+      target,
+      path.replace(/^req./, ''), // remove initial req. if any
+    );
     const keysToMerge = Object.keys(
       !!blocklist ? omit(autoBuilt, blocklist) : autoBuilt,
     );

@@ -2,10 +2,6 @@ import { Logger } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { get, pickBy, set } from 'lodash';
 import { ConfigType, IContextPropertyProvider } from '../interfaces';
-import {
-  isGqlContextRequestDefinition,
-  isHttpContextRequestDefinition,
-} from '../type-guards';
 
 export class Context {
   private readonly values = new Map<string | symbol, any>();
@@ -42,12 +38,8 @@ export class Context {
     }
 
     // from request
-    if (
-      isHttpContextRequestDefinition(definition) ||
-      isGqlContextRequestDefinition(definition)
-      // TODO do we need to add a microservice definition too ?
-    ) {
-      return this.getRequest() ? get(this.getRequest(), definition) : null;
+    if (typeof definition === 'string' && definition.startsWith('req.')) {
+      return get(this.getRequest(), definition.replace(/^req./, ''));
     }
 
     // from provider
