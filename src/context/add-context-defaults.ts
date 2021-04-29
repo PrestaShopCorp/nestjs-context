@@ -59,11 +59,14 @@ export const addContextDefaults = (config: ConfigType) => {
   switch (type) {
     case ContextName.HTTP:
       return {
-        type,
+        ...config,
         build: { ...build, ...createHttpContextDefaults(config) },
       };
     case ContextName.GQL:
-      return { type, build: { ...build, ...createGqlContextDefaults(config) } };
+      return {
+        ...config,
+        build: { ...build, ...createGqlContextDefaults(config) },
+      };
     default:
       return config;
   }

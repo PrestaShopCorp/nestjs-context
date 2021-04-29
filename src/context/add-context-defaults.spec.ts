@@ -1,4 +1,5 @@
-import { ContextName, HttpContextRequestProperty } from '../interfaces';
+import { omit } from 'lodash';
+import { ContextName, IContextPropertyProvider } from '../interfaces';
 import {
   CONTEXT_BIN,
   CONTEXT_CONTENT_TYPE,
@@ -21,16 +22,36 @@ const httpDefaults = [
   CONTEXT_PROTOCOL,
   CONTEXT_CONTENT_TYPE,
 ];
+
+class Provider implements IContextPropertyProvider {
+  get() {}
+}
+
 describe.each([
   [ContextName.HTTP, httpDefaults],
   [ContextName.GQL, []],
 ])(
   'addContextDefaults (%s)',
   (contextName: ContextName, defaults: string[]) => {
-    it(`adds: ${defaults.join(', ')}`, () => {
+    it(`adds build config for: ${defaults.join(', ')}`, () => {
       expect(
         Object.keys(addContextDefaults({ type: contextName, build: {} }).build),
       ).toStrictEqual(defaults);
+    });
+    it(`does not modify the rest of the config`, () => {
+      const config = {
+        type: contextName,
+        providers: [Provider],
+      };
+      expect(
+        omit(
+          addContextDefaults({
+            ...config,
+            build: {},
+          }),
+          ['build'],
+        ),
+      ).toStrictEqual(config);
     });
   },
 );
