@@ -74,7 +74,7 @@ last argument (setValues, which is a Map) passed to callbacks (3.) and providers
 
 You can use @BuildDto in your controllers to build a dto using different parts of the request
 at once. The decorator receives as an argument a definition with the same format as for the context
-construction:
+construction (except for the provider definition, still not working -see WIP-):
 
 ```typescript
 export class ExampleController {
@@ -115,6 +115,12 @@ export class ExampleController {
 auto-build as a fallback of the "build" properties, just set ```is_fallback: true```.
 - Every context has a default request "path" ([more info here](src/context/get-context-default-auto-build-path.ts))
 to look for the auto-built properties. Note that here it is not necessary to include the "req." prefix.
+
+### Attention!
+
+@BuildDto needs you to configure tsconfig with ```useDefineForClassFields: true``` or 
+```strictPropertyInitialization: true```. Without any of those configs, any declared and not initialised 
+property in your DTO won't be taken into account when building the DTO
 
 ### Getting the correlation-id into class property 
 - Note: you need to add Context as DI to use this decorator
@@ -158,15 +164,15 @@ Create an [issue](https://github.com/PrestaShopCorp/nesjs-context/issues).
 
 ## WIP
 
-* Unit Tests 
-* Add HTTP context defaults
 * CQL context
 * Processors ? (setCorrelationId ?)
 * RPC context
-* Do we need anything else to integrate with nestjs-geteventstore ? (CorrelationIdMetadata ?)
+* Can we add the ModuleRef DI to @BuildDto using @SetMetadata + explorer ?
 * Created for Express: adapt it to work on other platforms
 
 ## TO ANALYSE
-* Use custom param decorator instead to receive the target as argument instead of using
+
+* Modify createRouteParam / use custom param decorator to receive the target as argument instead of using
   [createParamDecorator](https://github.com/nestjs/nest/blob/master/packages/common/decorators/http/create-route-param-metadata.decorator.ts)
   => so we can remove "target" in full BuildDto calls
+  

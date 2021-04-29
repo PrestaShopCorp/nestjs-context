@@ -28,8 +28,9 @@ describe('Context', () => {
   const config: ConfigType = {
     type: ContextName.HTTP,
     build,
+    providers: [Provider],
   };
-  const context = new Context(build, request, moduleRef);
+  const context = new Context(config, request, moduleRef);
   const ctxPayloadWithoutNull = {
     value: build.value[1],
     fallback: build.fallback[0],

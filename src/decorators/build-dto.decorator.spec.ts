@@ -1,5 +1,5 @@
 import { buildDtoFactory, buildDtoFullOptions } from './build-dto.decorator';
-import { ContextName } from '../interfaces';
+import { ContextName, IContextPropertyProvider } from '../interfaces';
 
 describe('@BuildDto', () => {
   const fullOptions = {
@@ -21,18 +21,36 @@ describe('@BuildDto', () => {
     );
     expect(buildDtoFullOptions(fullOptions)).toStrictEqual(fullOptions);
   });
-  it('builds a dto from the request and custom parameters', () => {
+  it('builds a dto from the request and custom values, custom callbacks and providers', () => {
+    class Provider implements IContextPropertyProvider {
+      get() {
+        return 'provider';
+      }
+    }
     const builder = jest.fn(() => ({})) as any;
     const dto = buildDtoFactory(
       {
         ...fullOptions,
-        build: { test: ['req.headers.test'], custom: ['custom'] },
+        build: {
+          request: ['req.headers.test'],
+          value: ['value'],
+          callback: [(req) => req.headers.test],
+          provider: [Provider],
+        },
         auto: { enabled: false },
+        providers: [Provider],
       },
-      { headers: { test: 1 } },
+      { headers: { test: 'ok' } },
       builder,
     );
-    expect(dto).toStrictEqual({ test: 1, custom: 'custom' });
+    // TODO : to make Providers work, we should use SetMetadata instead and create an
+    //  explorer that adds the dependency to the controllers using the BuildDto
+    expect(dto).toStrictEqual({
+      request: 'ok',
+      value: 'value',
+      callback: 'ok',
+      // provider: 'provider',
+    });
     expect(builder).not.toHaveBeenCalled();
   });
   it('builds -automatically- a dto from the request if auto was enabled, even if build definition is not defined', () => {

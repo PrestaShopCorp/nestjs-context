@@ -4,13 +4,16 @@ import { get, pickBy, set } from 'lodash';
 import { ConfigType, IContextPropertyProvider } from '../interfaces';
 
 export class Context {
+  private readonly build: ConfigType['build'];
   private readonly values = new Map<string | symbol, any>();
   private readonly logger = new Logger();
+
   constructor(
-    private readonly build: ConfigType['build'],
+    private readonly config: ConfigType,
     private readonly request?: any,
     private readonly moduleRef?: ModuleRef,
   ) {
+    this.build = config?.build || {};
     this.logger.setContext(Context.name);
   }
 
@@ -31,6 +34,10 @@ export class Context {
     }
   }
 
+  private hasProvider(name): boolean {
+    return this.config?.providers?.includes(name) ?? false;
+  }
+
   private buildContextValue(key, definition) {
     // context set value
     if (typeof this.values[key] !== 'undefined') {
@@ -43,13 +50,17 @@ export class Context {
     }
 
     // from provider
-    const provider = ['string', 'symbol', 'function'].includes(
-      typeof definition,
-    )
-      ? this.getProvider(definition)
-      : null;
-    if (!!provider && !!provider.get) {
-      return provider.get(this.getRequest(), key, this.values);
+    if (
+      ['string', 'symbol', 'function'].includes(typeof definition) &&
+      this.hasProvider(definition)
+    ) {
+      return (
+        this.getProvider(definition)?.get(
+          this.getRequest(),
+          key,
+          this.values,
+        ) || null
+      );
     }
 
     // from callback

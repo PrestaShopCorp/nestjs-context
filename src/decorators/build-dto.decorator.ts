@@ -1,4 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { omit } from 'lodash';
 import { addAutomaticBuild } from '../tools';
 import { Context, getContextRequest } from '../context';
 import { BuildDtoType, ContextName, OptionalType } from '../interfaces';
@@ -21,10 +22,11 @@ export const buildDtoFactory = (
 ) => {
   const { target, auto = { enabled: false }, build = {} } = options;
   const { enabled: isAuto = false } = auto;
-  return new Context(
-    isAuto && !!target ? addAuto(build, options) : build,
-    request,
-  ).getAll();
+  const config = {
+    ...omit(options, ['target', 'auto']),
+    build: isAuto && !!target ? addAuto(build, options) : build,
+  };
+  return new Context(config, request).getAll();
 };
 
 export const buildDtoFullOptions = (
