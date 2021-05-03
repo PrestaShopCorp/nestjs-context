@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ContextModule, ContextName } from '../../../src';
+import { ContextModule, ContextName } from 'nestjs-context';
 import { ExampleImportedController } from './example-imported.controller';
 
 @Module({

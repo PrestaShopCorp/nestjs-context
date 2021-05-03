@@ -17,6 +17,7 @@
     "@nestjs/platform-express": "^7.5.1",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
+    "nestjs-context": "^0.1.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.3"

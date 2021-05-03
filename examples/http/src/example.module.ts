@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { Request } from 'express';
-import { ContextModule, ContextName } from '../../../src';
+import { ContextModule, ContextName } from 'nestjs-context';
 import { ExampleController } from './example.controller';
 import { ExampleContextPropertyProvider } from './example-context-property.provider';
 import { ExampleImportedModule } from './example-imported.module';
+import { ExampleProvider } from './example.provider';
 
 @Module({
+  providers: [ExampleProvider],
   imports: [
     ExampleImportedModule,
     ContextModule.registerWithDefaults({

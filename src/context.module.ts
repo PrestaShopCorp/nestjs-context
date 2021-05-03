@@ -8,7 +8,9 @@ import { CorrelationIdInterceptor } from './interceptors';
 
 @Module({})
 export class ContextModule {
-  static registerWithDefaults(config: ConfigType) {
+  static registerWithDefaults(
+    config: ConfigType = { type: ContextName.HTTP, build: {} },
+  ) {
     return ContextModule.register(config, true);
   }
   static register(config: ConfigType, addDefaults = false) {

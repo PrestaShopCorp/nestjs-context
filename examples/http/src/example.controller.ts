@@ -4,8 +4,9 @@ import {
   BuildDto,
   Context,
   CorrelationId,
-} from '../../../src';
+} from 'nestjs-context';
 import { ExampleDto } from './example.dto';
+import { ExampleProvider } from './example.provider';
 
 @Controller()
 @AddCorrelationIdDecorator('metadata.correlation_id')
@@ -15,13 +16,16 @@ export class ExampleController {
   private declare readonly correlationId;
   private readonly metadata;
 
-  constructor(private readonly ctx: Context) {}
+  constructor(
+    private readonly ctx: Context,
+    private readonly provider: ExampleProvider,
+  ) {}
 
   @Post('/example-1')
   async example1(@BuildDto({ dto_id: ['req.body.id'] }) dto: ExampleDto) {
     this.logger.log(this.correlationId);
     this.logger.log(this.metadata);
-    this.logger.log(this.ctx.getAll());
+    this.logger.log(this.provider.getAll());
     this.logger.log(JSON.stringify(dto));
     return 'ok';
   }

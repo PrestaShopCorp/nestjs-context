@@ -2,7 +2,8 @@
 
 Read [ExampleModule](./src/example.module.ts) to understand how this example is working.
 
-Execute yarn:start at this folder to start the server
+- Execute yarn:install to prepare the app to be executed.
+- Execute yarn:start at this folder to start the server
 
 To see the context in action try to execute a curl like: 
 ```

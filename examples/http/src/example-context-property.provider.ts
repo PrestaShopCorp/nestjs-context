@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
-import { IContextPropertyProvider } from '../../../src';
+import { IContextPropertyProvider } from 'nestjs-context';
 
 @Injectable()
 export class ExampleContextPropertyProvider
