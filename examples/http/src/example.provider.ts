@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Context } from 'nestjs-context';
+import { Context } from '../../../src';
 
 @Injectable()
 export class ExampleProvider {

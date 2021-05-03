@@ -10,7 +10,7 @@ import { getObjectPropertyKeyForContext } from '../helpers';
  * @param path
  * @constructor
  */
-export const AddCorrelationIdDecorator = (path: string) => <
+export const AddCorrelationId = (path: string) => <
   T extends { new (...args: any[]): any }
 >(
   Target: T,

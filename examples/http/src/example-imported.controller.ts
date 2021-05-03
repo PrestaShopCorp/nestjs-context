@@ -1,5 +1,5 @@
 import { Controller, Logger, Post } from '@nestjs/common';
-import { Context } from 'nestjs-context';
+import { Context } from '../../../src';
 
 @Controller()
 export class ExampleImportedController {

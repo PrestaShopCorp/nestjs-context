@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { Request } from 'express';
 import { ContextModule, ContextName } from '../../../src';
 import { ExampleController } from './example.controller';
 import { ExampleContextPropertyProvider } from './example-context-property.provider';
-import { ExampleImportedModule } from './example-imported.module';
-import { ExampleProvider } from './example.provider';
+import { ExampleHandler } from './example.handler';
 
 @Module({
-  providers: [ExampleProvider],
+  providers: [ExampleHandler],
   imports: [
-    ExampleImportedModule,
     ContextModule.registerWithDefaults({
       type: ContextName.HTTP,
       build: {
@@ -25,6 +24,7 @@ import { ExampleProvider } from './example.provider';
       },
       providers: [ExampleContextPropertyProvider],
     }),
+    CqrsModule,
   ],
   controllers: [ExampleController],
 })

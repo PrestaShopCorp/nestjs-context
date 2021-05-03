@@ -1,4 +1,4 @@
-import { AddCorrelationIdDecorator } from './add-correlation-id.decorator';
+import { AddCorrelationId } from './add-correlation-id.decorator';
 import { Context } from '../context';
 import { contextInstanceMock } from '../tests/mocks/context-instance.mock';
 import { CONTEXT_CORRELATION_ID } from '../constants';
@@ -6,7 +6,7 @@ import { CONTEXT_CORRELATION_ID } from '../constants';
 describe('@AddCorrelationId', () => {
   it('throws an error if context DI is not present in the targeted class', () => {
     try {
-      @AddCorrelationIdDecorator('metadata.correlationId')
+      @AddCorrelationId('metadata.correlationId')
       class WithoutContext {
         private readonly metadata;
       }
@@ -15,7 +15,7 @@ describe('@AddCorrelationId', () => {
     }
   });
   it('hydrates the correlation id from the context into a property', () => {
-    @AddCorrelationIdDecorator('correlationId')
+    @AddCorrelationId('correlationId')
     class WithPropertyClass {
       public readonly correlationId;
       constructor(private readonly context: Context = contextInstanceMock) {}
@@ -24,7 +24,7 @@ describe('@AddCorrelationId', () => {
     expect(new WithPropertyClass().correlationId).toBe(CONTEXT_CORRELATION_ID);
   });
   it('hydrates the correlation id from the context into a sub-property', () => {
-    @AddCorrelationIdDecorator('metadata.correlationId')
+    @AddCorrelationId('metadata.correlationId')
     class WithPropertyClass {
       public readonly metadata;
       constructor(private readonly context: Context = contextInstanceMock) {}

@@ -6,7 +6,6 @@ export const HEADER_CONTENT_TYPE = 'content-type';
 export const CONTEXT_CORRELATION_ID = 'correlation_id';
 export const CONTEXT_PLATFORM = 'platform';
 export const CONTEXT_HOSTNAME = 'hostname';
-export const CONTEXT_RUNTIME = 'runtime';
 export const CONTEXT_BIN = 'bin';
 export const CONTEXT_PATH = 'path';
 export const CONTEXT_PROTOCOL = 'protocol';

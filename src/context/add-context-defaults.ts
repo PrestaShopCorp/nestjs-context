@@ -14,7 +14,6 @@ import {
   CONTEXT_PLATFORM,
   CONTEXT_PATH,
   CONTEXT_PROTOCOL,
-  CONTEXT_RUNTIME,
   HEADER_CONTENT_TYPE,
   HEADER_CORRELATION_ID,
 } from '../constants';
@@ -34,11 +33,6 @@ const createHttpContextDefaults = (config: ConfigType) => {
     ],
     [CONTEXT_PLATFORM]: [platform()],
     [CONTEXT_HOSTNAME]: [hostname(), 'req.hostname'],
-    [CONTEXT_RUNTIME]: [
-      `${process.argv?.[0] ? basename(process.argv[0]) : 'unknown'} ${
-        process.version
-      }`,
-    ],
     [CONTEXT_BIN]: [
       process.argv?.[1]
         ? basename(process.argv[1], extname(process.argv[1]))

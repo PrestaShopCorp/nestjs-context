@@ -8,7 +8,6 @@ import {
   CONTEXT_PATH,
   CONTEXT_PLATFORM,
   CONTEXT_PROTOCOL,
-  CONTEXT_RUNTIME,
 } from '../constants';
 import { addContextDefaults } from './add-context-defaults';
 
@@ -16,7 +15,6 @@ const httpDefaults = [
   CONTEXT_CORRELATION_ID,
   CONTEXT_PLATFORM,
   CONTEXT_HOSTNAME,
-  CONTEXT_RUNTIME,
   CONTEXT_BIN,
   CONTEXT_PATH,
   CONTEXT_PROTOCOL,

@@ -1,15 +1,15 @@
 import { Controller, Logger, Post } from '@nestjs/common';
 import {
-  AddCorrelationIdDecorator,
+  AddCorrelationId,
   BuildDto,
   Context,
   CorrelationId,
-} from 'nestjs-context';
+} from '../../../src';
 import { ExampleDto } from './example.dto';
 import { ExampleProvider } from './example.provider';
 
 @Controller()
-@AddCorrelationIdDecorator('metadata.correlation_id')
+@AddCorrelationId('metadata.correlation_id')
 export class ExampleController {
   private logger = new Logger();
   @CorrelationId()
