@@ -13,6 +13,6 @@ export class ExampleHandler implements ICommandHandler<ExampleCommand> {
     console.log(this.correlationId);
     console.log(this.metadata);
     console.log(this.context.getAll());
-    return 'ok';
+    return command;
   }
 }

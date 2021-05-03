@@ -20,6 +20,7 @@ export class ContextRequestInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap(() => {
         this.context.setRequest(null);
+        this.context.clear();
       }),
     );
   }

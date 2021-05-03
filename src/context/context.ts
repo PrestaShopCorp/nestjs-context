@@ -22,6 +22,10 @@ export class Context {
     return this;
   }
 
+  clear() {
+    this.values.clear();
+  }
+
   public setRequest(request: any) {
     this.request = request;
     return this;
