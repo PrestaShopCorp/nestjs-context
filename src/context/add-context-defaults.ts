@@ -58,11 +58,11 @@ export const addContextDefaults = (config: ConfigType) => {
         ...config,
         build: { ...build, ...createHttpContextDefaults(config) },
       };
-    case ContextName.GQL:
-      return {
-        ...config,
-        build: { ...build, ...createGqlContextDefaults(config) },
-      };
+    // case ContextName.GQL_HTTP:
+    //   return {
+    //     ...config,
+    //     build: { ...build, ...createGqlContextDefaults(config) },
+    //   };
     default:
       return config;
   }

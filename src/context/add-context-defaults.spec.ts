@@ -27,7 +27,7 @@ class Provider implements IContextPropertyProvider {
 
 describe.each([
   [ContextName.HTTP, httpDefaults],
-  [ContextName.GQL, []],
+  [ContextName.GQL_HTTP, []],
 ])(
   'addContextDefaults (%s)',
   (contextName: ContextName, defaults: string[]) => {

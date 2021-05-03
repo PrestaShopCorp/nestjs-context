@@ -19,8 +19,13 @@ describe('getContextRequest', () => {
       'request',
     );
   });
-  it(`returns request for ${ContextName.GQL} context`, () => {
-    expect(getContextRequest(ContextName.GQL, executionContext)).toBe(
+  it(`returns request for ${ContextName.GQL_HTTP} context`, () => {
+    expect(getContextRequest(ContextName.GQL_HTTP, executionContext)).toBe(
+      'request',
+    );
+  });
+  it(`returns request for ${ContextName.GQL_WS} context`, () => {
+    expect(getContextRequest(ContextName.GQL_WS, executionContext)).toBe(
       'data-ws',
     );
   });
