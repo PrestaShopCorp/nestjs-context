@@ -13,7 +13,7 @@ describe('getContextDefaultAutoBuildPath', () => {
   it(`gets '' as default for ${ContextName.RPC} context`, () => {
     expect(getContextDefaultAutoBuildPath(ContextName.RPC)).toBe('');
   });
-  it(`gets '' as default for ${ContextName.GQL} context`, () => {
-    expect(getContextDefaultAutoBuildPath(ContextName.GQL)).toBe('');
+  it(`gets '' as default for ${ContextName.GQL_HTTP} context`, () => {
+    expect(getContextDefaultAutoBuildPath(ContextName.GQL_HTTP)).toBe('');
   });
 });

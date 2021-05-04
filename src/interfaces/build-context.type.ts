@@ -21,7 +21,7 @@ export type BuildContextDefinitionType<T extends ContextName> =
   | BuildContextFromProviderType
   | (T extends ContextName.HTTP
       ? BuildContextFromHttpRequestType
-      : T extends ContextName.GQL
+      : T extends ContextName.GQL_HTTP | ContextName.GQL_WS
       ? BuildFromGqlRequestType
       : never);
 

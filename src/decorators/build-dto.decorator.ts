@@ -26,7 +26,7 @@ export const buildDtoFactory = (
     ...omit(options, ['target', 'auto']),
     build: isAuto && !!target ? addAuto(build, options) : build,
   };
-  return new Context(config, request).getAll();
+  return new Context(config).setRequest(request).getAll();
 };
 
 export const buildDtoFullOptions = (

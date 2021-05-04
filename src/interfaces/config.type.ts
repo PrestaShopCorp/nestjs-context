@@ -20,8 +20,12 @@ export type ConfigType = CommonConfig &
         build: BuildContextType<ContextName.HTTP>;
       }
     | {
-        type: ContextName.GQL;
-        build: BuildContextType<ContextName.GQL>;
+        type: ContextName.GQL_HTTP;
+        build: BuildContextType<ContextName.GQL_HTTP>;
+      }
+    | {
+        type: ContextName.GQL_WS;
+        build: BuildContextType<ContextName.GQL_WS>;
       }
     | {
         type: ContextName.RPC;

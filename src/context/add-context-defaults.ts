@@ -14,7 +14,6 @@ import {
   CONTEXT_PLATFORM,
   CONTEXT_PATH,
   CONTEXT_PROTOCOL,
-  CONTEXT_RUNTIME,
   HEADER_CONTENT_TYPE,
   HEADER_CORRELATION_ID,
 } from '../constants';
@@ -34,17 +33,14 @@ const createHttpContextDefaults = (config: ConfigType) => {
     ],
     [CONTEXT_PLATFORM]: [platform()],
     [CONTEXT_HOSTNAME]: [hostname(), 'req.hostname'],
-    [CONTEXT_RUNTIME]: [
-      `${process.argv?.[0] ? basename(process.argv[0]) : 'unknown'} ${
-        process.version
-      }`,
-    ],
     [CONTEXT_BIN]: [
       process.argv?.[1]
         ? basename(process.argv[1], extname(process.argv[1]))
         : `${hostname()}_${process.argv?.[0] || 'unknown'}`,
     ],
-    [CONTEXT_PATH]: [(req: Request) => req.baseUrl + req.path],
+    [CONTEXT_PATH]: [
+      (req: Request) => (req ? req.baseUrl + req.path : 'unknown'),
+    ],
     [CONTEXT_PROTOCOL]: ['req.protocol'],
     [CONTEXT_CONTENT_TYPE]: [`req.${HttpProp.HEADERS}.${HEADER_CONTENT_TYPE}`],
   };
@@ -62,11 +58,11 @@ export const addContextDefaults = (config: ConfigType) => {
         ...config,
         build: { ...build, ...createHttpContextDefaults(config) },
       };
-    case ContextName.GQL:
-      return {
-        ...config,
-        build: { ...build, ...createGqlContextDefaults(config) },
-      };
+    // case ContextName.GQL_HTTP:
+    //   return {
+    //     ...config,
+    //     build: { ...build, ...createGqlContextDefaults(config) },
+    //   };
     default:
       return config;
   }

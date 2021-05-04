@@ -7,10 +7,10 @@ export class Context {
   private readonly build: ConfigType['build'];
   private readonly values = new Map<string | symbol, any>();
   private readonly logger = new Logger();
+  private request: any = null;
 
   constructor(
     private readonly config: ConfigType,
-    private readonly request?: any,
     private readonly moduleRef?: ModuleRef,
   ) {
     this.build = config?.build || {};
@@ -19,6 +19,15 @@ export class Context {
 
   setValue(key: string | symbol, value: any) {
     this.values[key] = value;
+    return this;
+  }
+
+  clear() {
+    this.values.clear();
+  }
+
+  public setRequest(request: any) {
+    this.request = request;
     return this;
   }
 
