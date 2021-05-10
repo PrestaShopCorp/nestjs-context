@@ -54,6 +54,10 @@ as they will automatically add useful information to your context (fex: correlat
 - Check all the [config options](./src/interfaces/config.type.ts) for further information about available 
   configurations
 
+You can also declare the Context as global passing another argument to the "register" functions:
+```ContextModule.registerWithDefaults(config, true)``` and ```ContextModule.register(config, true, true)```.
+That is pretty useful when you want to use the application context everywhere.
+
 The context object uses the "build" definition from the config to pick elements from 
 the request; it is an object where the keys are the resulting context properties, and the 
 values are LIFO of possible values for that property. A value can be defined using:
@@ -164,10 +168,11 @@ Create an [issue](https://github.com/PrestaShopCorp/nesjs-context/issues).
 
 ## WIP
 
-* CQL context
+* GQL context
 * Processors ? (setCorrelationId ?)
 * RPC context
 * Can we add the ModuleRef DI to @BuildDto using @SetMetadata + explorer ?
+* Can we use the Context service instead of creating a new Context in @BuildDto ?
 * Created for Express: adapt it to work on other platforms
 
 ## TO ANALYSE
