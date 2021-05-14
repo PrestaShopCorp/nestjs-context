@@ -12,10 +12,11 @@ import {
 export class ContextModule {
   static registerWithDefaults(
     config: ConfigType = { type: ContextName.HTTP, build: {} },
+    isGlobal = false,
   ) {
-    return ContextModule.register(config, true);
+    return ContextModule.register(config, true, isGlobal);
   }
-  static register(config: ConfigType, addDefaults = false) {
+  static register(config: ConfigType, addDefaults = false, isGlobal = false) {
     const { providers = [] } = config;
     return {
       module: ContextModule,
@@ -43,6 +44,7 @@ export class ContextModule {
         },
       ],
       exports: [Context],
+      global: isGlobal,
     };
   }
 }
