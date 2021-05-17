@@ -22,7 +22,7 @@ import { correlationIdGenerator } from '../tools';
 
 // TODO JDM add stackdrive and information needed for cloud events
 
-const createHttpContextDefaults = (config: ConfigType) => {
+const createHttpContextDefaults = (config: Partial<ConfigType>) => {
   const { generator = null, header = HEADER_CORRELATION_ID } =
     config?.correlation_id ?? {};
   const build = {
@@ -49,7 +49,9 @@ const createHttpContextDefaults = (config: ConfigType) => {
   };
 };
 
-export const addContextDefaults = (config: ConfigType) => {
+export const addContextDefaults = (
+  config: Partial<ConfigType> & { type: ConfigType['type'] },
+) => {
   const { type } = config;
 
   switch (type) {
