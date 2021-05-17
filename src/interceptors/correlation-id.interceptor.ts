@@ -24,13 +24,15 @@ export class CorrelationIdInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const headerName =
       this.config?.correlation_id?.header ?? HEADER_CORRELATION_ID;
-    context
-      .switchToHttp()
-      .getResponse()
-      .set(
-        startCase(headerName).replace(/ /g, '-'),
-        this.context.get(CONTEXT_CORRELATION_ID),
-      );
+    if (this.context.get(CONTEXT_CORRELATION_ID)) {
+      context
+        .switchToHttp()
+        .getResponse()
+        .set(
+          startCase(headerName).replace(/ /g, '-'),
+          this.context.get(CONTEXT_CORRELATION_ID),
+        );
+    }
     return next.handle();
   }
 }

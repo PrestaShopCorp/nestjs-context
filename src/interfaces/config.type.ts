@@ -7,9 +7,10 @@ import { ContextName } from './context-name.enum';
 import { IContextPropertyProvider } from './context-property-provider.interface';
 
 type CommonConfig = {
+  cache?: boolean;
   providers?: Type<IContextPropertyProvider>[];
   correlation_id?: {
-    generator?: BuildContextFromCallbackType;
+    generator?: true | BuildContextFromCallbackType;
     header?: string;
   };
 };

@@ -5,7 +5,7 @@ import { ConfigType, IContextPropertyProvider } from '../interfaces';
 
 export class Context {
   private readonly build: ConfigType['build'];
-  private readonly values = new Map<string | symbol, any>();
+  private cache: Map<string | symbol, any>;
   private readonly logger = new Logger();
   private request: any = null;
 
@@ -15,15 +15,25 @@ export class Context {
   ) {
     this.build = config?.build || {};
     this.logger.setContext(Context.name);
+    this.clear();
   }
 
-  setValue(key: string | symbol, value: any) {
-    this.values[key] = value;
+  setCachedValue(key: string | symbol, value: any) {
+    this.cache[key] = value;
     return this;
   }
 
+  getCachedValue(key: string | symbol) {
+    return this.cache[key] ?? null;
+  }
+
+  isCached(key: string | symbol): boolean {
+    return typeof this.cache[key] !== 'undefined';
+  }
+
   clear() {
-    this.values.clear();
+    this.cache = new Map<string | symbol, any>();
+    return this;
   }
 
   public setRequest(request: any) {
@@ -49,8 +59,8 @@ export class Context {
 
   private buildContextValue(key, definition) {
     // context set value
-    if (typeof this.values[key] !== 'undefined') {
-      return this.values[key];
+    if (!!this.config.cache && this.isCached(key)) {
+      return this.getCachedValue(key);
     }
 
     // from request
@@ -63,18 +73,12 @@ export class Context {
       ['string', 'symbol', 'function'].includes(typeof definition) &&
       this.hasProvider(definition)
     ) {
-      return (
-        this.getProvider(definition)?.get(
-          this.getRequest(),
-          key,
-          this.values,
-        ) || null
-      );
+      return this.getProvider(definition)?.get(this.getRequest(), key) || null;
     }
 
     // from callback
     if (typeof definition === 'function') {
-      return definition(this.getRequest(), this.values);
+      return definition(this.getRequest());
     }
 
     // from custom number or custom string value
@@ -89,6 +93,9 @@ export class Context {
     let value = null;
     for (const definition of this.build[key]) {
       value = this.buildContextValue(key, definition) ?? value;
+    }
+    if (!!this.config.cache) {
+      this.setCachedValue(key, value);
     }
     return value;
   }

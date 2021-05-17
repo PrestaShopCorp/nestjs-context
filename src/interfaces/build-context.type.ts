@@ -4,10 +4,7 @@ import { ContextName } from './context-name.enum';
 import { HttpContextRequestProperty } from './http-context-request-property.enum';
 
 export type BuildContextFromValueType = string | number;
-export type BuildContextFromCallbackType = (
-  req?: any,
-  setValues?: Map<string | symbol, any>,
-) => any;
+export type BuildContextFromCallbackType = (req?: any) => any;
 export type BuildContextFromProviderType = ClassProvider<IContextPropertyProvider>['provide'];
 export type BuildContextFromHttpRequestType = `${
   | HttpContextRequestProperty.BODY

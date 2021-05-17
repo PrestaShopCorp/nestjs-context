@@ -1,6 +1,7 @@
 import { hostname, platform } from 'os';
 import { basename, extname } from 'path';
 import { Request } from 'express';
+import { merge } from 'lodash';
 import {
   ConfigType,
   ContextName,
@@ -22,14 +23,12 @@ import { correlationIdGenerator } from '../tools';
 // TODO JDM add stackdrive and information needed for cloud events
 
 const createHttpContextDefaults = (config: ConfigType) => {
-  const { correlation_id } = config;
-  return {
+  const { generator = null, header = HEADER_CORRELATION_ID } =
+    config?.correlation_id ?? {};
+  const build = {
     [CONTEXT_CORRELATION_ID]: [
-      correlation_id?.generator ??
-        correlationIdGenerator(CONTEXT_CORRELATION_ID),
-      `req.${HttpProp.HEADERS}.${
-        correlation_id?.header ?? HEADER_CORRELATION_ID
-      }`,
+      generator === true ? correlationIdGenerator : generator,
+      `req.${HttpProp.HEADERS}.${header}`,
     ],
     [CONTEXT_PLATFORM]: [platform()],
     [CONTEXT_HOSTNAME]: [hostname(), 'req.hostname'],
@@ -44,25 +43,18 @@ const createHttpContextDefaults = (config: ConfigType) => {
     [CONTEXT_PROTOCOL]: ['req.protocol'],
     [CONTEXT_CONTENT_TYPE]: [`req.${HttpProp.HEADERS}.${HEADER_CONTENT_TYPE}`],
   };
+  return {
+    build,
+    cache: true,
+  };
 };
 
-// TODO JDM make it work
-const createGqlContextDefaults = (config: ConfigType) => ({});
-
 export const addContextDefaults = (config: ConfigType) => {
-  const { type, build } = config;
+  const { type } = config;
 
   switch (type) {
     case ContextName.HTTP:
-      return {
-        ...config,
-        build: { ...build, ...createHttpContextDefaults(config) },
-      };
-    // case ContextName.GQL_HTTP:
-    //   return {
-    //     ...config,
-    //     build: { ...build, ...createGqlContextDefaults(config) },
-    //   };
+      return merge(config, createHttpContextDefaults(config));
     default:
       return config;
   }
