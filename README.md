@@ -64,15 +64,14 @@ values are LIFO of possible values for that property. A value can be defined usi
 
 1. A custom string or numeric value (fex: 35)
 2. A path inside the request, using "req" as first key (fex: "req.body.id")
-3. A callback that will receive the request and the setValues as arguments
+3. A callback that will receive the request as argument
 4. A provider implementing
    [IContextPropertyProvider](./src/interfaces/context-property-provider.interface.ts).
-   Provider::get will be called to build the value, passing request, property key and setValues as arguments to it
+   Provider::get will be called to build the value, passing request and property key as arguments to it
 
 As possible values are LIFO, if the last value was null or undefined the context will try with the previous one, 
-and so successively. You can manually set values into context calling "Context::setValue": set values will take 
-precedence over any other declared possible values. You can also set a value for the current request using the 
-last argument (setValues, which is a Map) passed to callbacks (3.) and providers (4.).
+and so successively. You can manually set values into context calling "Context::setCachedValue": set values will 
+take precedence over any other declared possible values.
 
 ### Using the @BuildDto decorator
 
@@ -125,6 +124,41 @@ to look for the auto-built properties. Note that here it is not necessary to inc
 @BuildDto needs you to configure tsconfig with ```useDefineForClassFields: true``` or 
 ```strictPropertyInitialization: true```. Without any of those configs, any declared and not initialised 
 property in your DTO won't be taken into account when building the DTO
+
+### Generating the correlation-id automatically
+
+If you need to include a correlation_id event if the x-correlation-id header is not included, you
+can use a correlation_id generator as callback using the following config: 
+
+```typescript
+import { Module, Logger } from '@nestjs/common';
+import { ContextModule } from 'nesjs-context';
+import { GetUser } from './context-providers';
+
+@Module({
+  imports: [
+    ContextModule.registerWithDefaults({
+      type: ContextName.HTTP,
+      build: {
+        host: ['req.headers.host'], // request path
+        node_env: [process.env.NODE_ENV], // value
+        user: ['anon.', GetUser], // provider with fallback
+        entity: [(req: Request) => `${req.params.entity}_${req.params.id}`], //callback
+      },
+      providers: [GetUser, GetShopId],
+      correlation_id: {
+        //header: 'use-this-instead-of-x-correlation-id',
+        generator: true
+        // you could also use a callback like (req) => 'generated-correlation-id'
+      },
+    }),
+  ],
+})
+export class ExampleModule {}
+```
+
+Setting generator to "true" will use the default correlation-id, but you could rather generate it yourself 
+using a callback.
 
 ### Getting the correlation-id into class property 
 - Note: you need to add Context as DI to use this decorator

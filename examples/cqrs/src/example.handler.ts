@@ -10,9 +10,9 @@ export class ExampleHandler implements ICommandHandler<ExampleCommand> {
   private readonly metadata;
   constructor(private readonly context: Context) {}
   async execute(command: ExampleCommand) {
-    console.log(this.correlationId);
-    console.log(this.metadata);
-    console.log(this.context.getAll());
+    // console.log(this.correlationId);
+    // console.log(this.metadata);
+    // console.log(this.context.getAll());
     return command;
   }
 }

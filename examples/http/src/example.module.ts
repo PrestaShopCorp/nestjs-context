@@ -25,8 +25,12 @@ import { ExampleProvider } from './example.provider';
           from_callback: [(req: Request) => `callback:${req.body.id}`],
         },
         providers: [ExampleContextPropertyProvider],
+        correlation_id: {
+          //header: 'use-this-instead-of-x-correlation-id',
+          generator: true,
+        },
       },
-      false,
+      true,
     ),
   ],
   controllers: [ExampleController],

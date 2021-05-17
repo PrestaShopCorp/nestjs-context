@@ -40,6 +40,7 @@ describe.each([
       const config = {
         type: contextName,
         providers: [Provider],
+        cache: true,
       };
       expect(
         omit(
