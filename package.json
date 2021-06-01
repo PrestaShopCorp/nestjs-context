@@ -3,6 +3,9 @@
   "version": "0.4.0",
   "description": "Nestjs execution context information service including request scoped info",
   "author": "Jacob Dharandas Méndez <j.dharandas@gmail.com>",
+  "contributors": [
+    "jdharandas"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
