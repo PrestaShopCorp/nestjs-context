@@ -66,7 +66,7 @@ export const addAutomaticBuild = (
       !!blocklist ? omit(autoBuilt, blocklist) : autoBuilt,
     );
     for (const key of keysToMerge) {
-      build[`${!!prefix ? prefix + '.' : ''}${key}`] = [
+      build[!!prefix ? `${prefix}.${key}` : key] = [
         ...autoBuilt[key],
         ...(build[key] || []),
       ];
