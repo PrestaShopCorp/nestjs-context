@@ -49,12 +49,13 @@ export const addAutomaticBuild = (
         enabled: false,
         blocklist: false,
         path: getContextDefaultAutoBuildPath(options.type),
+        prefix: '',
       },
     },
     options,
   );
   const { target, auto } = optionsWithDefaults;
-  const { enabled, blocklist, path } = auto;
+  const { enabled, blocklist, path, prefix } = auto;
 
   if (!!enabled && !!target) {
     const autoBuilt = getContextPropertiesBuildFromRequestPath(
@@ -65,7 +66,10 @@ export const addAutomaticBuild = (
       !!blocklist ? omit(autoBuilt, blocklist) : autoBuilt,
     );
     for (const key of keysToMerge) {
-      build[key] = [...autoBuilt[key], ...(build[key] || [])];
+      build[!!prefix ? `${prefix}.${key}` : key] = [
+        ...autoBuilt[key],
+        ...(build[key] || []),
+      ];
     }
   }
 

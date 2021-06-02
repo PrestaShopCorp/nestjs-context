@@ -25,6 +25,23 @@ describe('addAutomaticBuild', () => {
       }),
     ).toBe('test');
   });
+  it(`adds context-property-build callback to a custom sub-property inside `, () => {
+    const received = addAutomaticBuild(
+      {},
+      {
+        type: ContextName.HTTP,
+        target: Target,
+        auto: { enabled: true, prefix: 'custom' },
+      },
+    );
+    expect(
+      (received['custom.property'][0] as Function)({
+        [getContextDefaultAutoBuildPath(ContextName.HTTP)]: {
+          property: 'test',
+        },
+      }),
+    ).toBe('test');
+  });
   it(`adds context property build callback that uses the given path to look for the property`, () => {
     const path = 'test.my';
     const received = addAutomaticBuild(
