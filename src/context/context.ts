@@ -7,7 +7,7 @@ export class Context {
   private readonly build: ConfigType['build'];
   private cache: Map<string | symbol, any>;
   private readonly logger = new Logger();
-  private request: any = null;
+  public request: any = null;
 
   constructor(
     private readonly config: ConfigType,
@@ -41,10 +41,6 @@ export class Context {
     return this;
   }
 
-  private getRequest() {
-    return this.request;
-  }
-
   private getProvider(name): IContextPropertyProvider {
     try {
       return this.moduleRef?.get(name);
@@ -65,7 +61,7 @@ export class Context {
 
     // from request
     if (typeof definition === 'string' && definition.startsWith('req.')) {
-      return get(this.getRequest(), definition.replace(/^req./, ''));
+      return get(this.request, definition.replace(/^req./, ''));
     }
 
     // from provider
@@ -73,12 +69,12 @@ export class Context {
       ['string', 'symbol', 'function'].includes(typeof definition) &&
       this.hasProvider(definition)
     ) {
-      return this.getProvider(definition)?.get(this.getRequest(), key) || null;
+      return this.getProvider(definition)?.get(this.request, key) || null;
     }
 
     // from callback
     if (typeof definition === 'function') {
-      return definition(this.getRequest());
+      return definition(this.request);
     }
 
     // from custom number or custom string value
