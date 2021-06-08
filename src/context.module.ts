@@ -17,9 +17,10 @@ export class ContextModule {
     return ContextModule.register(config, true, isGlobal);
   }
   static register(config: ConfigType, addDefaults = false, isGlobal = false) {
-    const { providers = [] } = config;
+    const { imports = [], providers = [] } = config;
     return {
       module: ContextModule,
+      imports,
       providers: [
         ...providers,
         {
