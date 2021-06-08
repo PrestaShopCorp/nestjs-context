@@ -1,21 +1,19 @@
-import { ModuleMetadata, Type } from '@nestjs/common';
 import {
   BuildContextFromCallbackType,
   BuildContextType,
 } from './build-context.type';
 import { ContextName } from './context-name.enum';
-import { IContextPropertyProvider } from './context-property-provider.interface';
 
 type CommonConfig = {
-  cache?: boolean;
-  providers?: Type<IContextPropertyProvider>[];
-  imports?: ModuleMetadata['imports'];
+  global?: boolean;
+  cached?: boolean;
+  addDefaults?: boolean;
   correlation_id?: {
     generator?: true | BuildContextFromCallbackType;
     header?: string;
   };
 };
-export type ConfigType = CommonConfig &
+export type ContextConfigType = CommonConfig &
   (
     | {
         type: ContextName.HTTP;

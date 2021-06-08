@@ -6,7 +6,7 @@ import {
   CorrelationId,
 } from '../../../src';
 import { ExampleDto } from './example.dto';
-import { ExampleProvider } from './example.provider';
+import { ExampleProvider } from './providers/example.provider';
 
 @Controller()
 @AddCorrelationId('metadata.correlation_id')

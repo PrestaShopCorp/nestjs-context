@@ -21,10 +21,6 @@ const httpDefaults = [
   CONTEXT_CONTENT_TYPE,
 ];
 
-class Provider implements IContextPropertyProvider {
-  get() {}
-}
-
 describe.each([
   [ContextName.HTTP, httpDefaults],
   [ContextName.GQL_HTTP, []],
@@ -39,8 +35,7 @@ describe.each([
     it(`does not modify the rest of the config`, () => {
       const config = {
         type: contextName,
-        providers: [Provider],
-        cache: true,
+        cached: true,
       };
       expect(
         omit(

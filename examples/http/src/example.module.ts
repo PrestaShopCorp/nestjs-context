@@ -1,38 +1,44 @@
 import { Module } from '@nestjs/common';
 import { Request } from 'express';
-import { ContextModule, ContextName } from '../../../src';
+import { ContextConfigType, ContextName } from '../../../src';
 import { ExampleController } from './example.controller';
-import { ExampleContextPropertyProvider } from './example-context-property.provider';
-import { ExampleImportedModule } from './example-imported.module';
-import { ExampleProvider } from './example.provider';
+import { ExamplePropertyProvider } from './providers/example-property.provider';
+import { ImportedModule } from './imported/imported.module';
+import { ExampleProvider } from './providers/example.provider';
+import { convertToContextModule } from '../../../src';
 
-@Module({
-  providers: [ExampleProvider],
-  imports: [
-    ExampleImportedModule,
-    ContextModule.registerWithDefaults(
+const contextConfig = {
+  cached: true,
+  global: true, // change this value to see the side-effects
+  addDefaults: true, // change this value to see the side-effects
+  type: ContextName.HTTP,
+  build: {
+    'multi_level.value': ['my-value'],
+    host_from_header: ['req.headers.host'],
+    environment_from_value_or_query_or_header: [
+      'req.headers.environment',
+      'req.query.environment',
+      process.env.NODE_ENV,
+    ],
+    from_provider: [ExamplePropertyProvider],
+    from_callback: [(req: Request) => `callback:${req.body.id}`],
+  },
+  correlation_id: {
+    //header: 'use-this-instead-of-x-correlation-id',
+    generator: true,
+  },
+} as ContextConfigType;
+
+@Module({})
+export class ExampleModule {
+  static register() {
+    return convertToContextModule(
       {
-        type: ContextName.HTTP,
-        build: {
-          'multi_level.value': ['my-value'],
-          host_from_header: ['req.headers.host'],
-          environment_from_value_or_query_or_header: [
-            'req.headers.environment',
-            'req.query.environment',
-            process.env.NODE_ENV,
-          ],
-          from_provider: [ExampleContextPropertyProvider],
-          from_callback: [(req: Request) => `callback:${req.body.id}`],
-        },
-        providers: [ExampleContextPropertyProvider],
-        correlation_id: {
-          //header: 'use-this-instead-of-x-correlation-id',
-          generator: true,
-        },
+        providers: [ExampleProvider, ExamplePropertyProvider],
+        imports: [ImportedModule],
+        controllers: [ExampleController],
       },
-      true,
-    ),
-  ],
-  controllers: [ExampleController],
-})
-export class ExampleModule {}
+      contextConfig,
+    );
+  }
+}

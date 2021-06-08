@@ -1,5 +1,5 @@
 import {
-  ConfigType,
+  ContextConfigType,
   ContextName,
   IContextPropertyProvider,
 } from '../interfaces';
@@ -25,10 +25,9 @@ describe('Context', () => {
     callback: [() => 'callback'],
     nullish: ['req.headers.null'],
   };
-  const config: ConfigType = {
+  const config: ContextConfigType = {
     type: ContextName.HTTP,
     build,
-    providers: [Provider],
   };
   const context = new Context(config, moduleRef);
   context.setRequest(request);

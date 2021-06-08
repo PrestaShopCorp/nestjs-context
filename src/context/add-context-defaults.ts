@@ -3,7 +3,7 @@ import { basename, extname } from 'path';
 import { Request } from 'express';
 import { merge } from 'lodash';
 import {
-  ConfigType,
+  ContextConfigType,
   ContextName,
   HttpContextRequestProperty as HttpProp,
 } from '../interfaces';
@@ -22,7 +22,7 @@ import { correlationIdGenerator } from '../tools';
 
 // TODO JDM add stackdrive and information needed for cloud events
 
-const createHttpContextDefaults = (config: Partial<ConfigType>) => {
+const createHttpContextDefaults = (config: Partial<ContextConfigType>) => {
   const { generator = null, header = HEADER_CORRELATION_ID } =
     config?.correlation_id ?? {};
   const build = {
@@ -45,13 +45,13 @@ const createHttpContextDefaults = (config: Partial<ConfigType>) => {
   };
   return {
     build,
-    cache: true,
-  };
+    cached: true,
+  } as Partial<ContextConfigType>;
 };
 
-export const addContextDefaults = (
-  config: Partial<ConfigType> & { type: ConfigType['type'] },
-) => {
+export const addContextDefaults: (
+  config: Partial<ContextConfigType> & { type: ContextConfigType['type'] },
+) => ContextConfigType = (config) => {
   const { type } = config;
 
   switch (type) {
