@@ -8,7 +8,7 @@ import { ExampleHandler } from './example.handler';
 @Module({
   providers: [ExampleHandler],
   imports: [
-    ContextModule.registerWithDefaults({
+    ContextModule.register({
       type: ContextName.HTTP,
       build: {
         'multi_level.value': ['my-value'],
