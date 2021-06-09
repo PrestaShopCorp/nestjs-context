@@ -1,7 +1,7 @@
-import { ConfigType } from './config.type';
+import { ContextConfigType } from './context-config.type';
 import { OptionalType } from './optional.type';
 
-export type BuildDtoType = OptionalType<ConfigType, 'build'> & {
+export type BuildDtoType = OptionalType<ContextConfigType, 'build'> & {
   target: any;
   auto?: {
     enabled: boolean;

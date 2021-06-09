@@ -1,16 +1,19 @@
-import { Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { get, pickBy, set } from 'lodash';
-import { ConfigType, IContextPropertyProvider } from '../interfaces';
+import { ContextConfigType, IContextPropertyProvider } from '../interfaces';
+import { CONTEXT_MODULE_CONFIG } from '../constants';
 
+@Injectable()
 export class Context {
-  private readonly build: ConfigType['build'];
+  private readonly build: ContextConfigType['build'];
   private cache: Map<string | symbol, any>;
   private readonly logger = new Logger();
   public request: any = null;
 
   constructor(
-    private readonly config: ConfigType,
+    @Inject(CONTEXT_MODULE_CONFIG)
+    private readonly config: ContextConfigType,
     private readonly moduleRef?: ModuleRef,
   ) {
     this.build = config?.build || {};
@@ -49,13 +52,9 @@ export class Context {
     }
   }
 
-  private hasProvider(name): boolean {
-    return this.config?.providers?.includes(name) ?? false;
-  }
-
   private buildContextValue(key, definition) {
     // context set value
-    if (!!this.config.cache && this.isCached(key)) {
+    if (!!this.config.cached && this.isCached(key)) {
       return this.getCachedValue(key);
     }
 
@@ -65,11 +64,11 @@ export class Context {
     }
 
     // from provider
-    if (
-      ['string', 'symbol', 'function'].includes(typeof definition) &&
-      this.hasProvider(definition)
-    ) {
-      return this.getProvider(definition)?.get(this.request, key) || null;
+    if (['string', 'symbol', 'function'].includes(typeof definition)) {
+      const provider = this.getProvider(definition);
+      if (!!provider) {
+        return provider.get(this.request, key) || null;
+      }
     }
 
     // from callback
@@ -90,7 +89,7 @@ export class Context {
     for (const definition of this.build[key]) {
       value = this.buildContextValue(key, definition) ?? value;
     }
-    if (!!this.config.cache) {
+    if (!!this.config.cached) {
       this.setCachedValue(key, value);
     }
     return value;

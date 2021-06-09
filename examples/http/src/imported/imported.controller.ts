@@ -1,8 +1,8 @@
 import { Controller, Logger, Post } from '@nestjs/common';
-import { Context } from '../../../src';
+import { Context } from '../../../../src';
 
 @Controller()
-export class ExampleImportedController {
+export class ImportedController {
   private logger = new Logger();
 
   constructor(private readonly ctx: Context) {}

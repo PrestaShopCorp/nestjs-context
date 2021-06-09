@@ -1,51 +1,53 @@
 import { Module, Scope } from '@nestjs/common';
-import { APP_INTERCEPTOR, ModuleRef } from '@nestjs/core';
-import { addContextDefaults, Context } from './context';
-import { ConfigType, ContextName } from './interfaces';
-import { CONTEXT_MODULE_CONFIG } from './constants';
+import { ContextConfigType, ContextName } from './interfaces';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import {
-  CorrelationIdInterceptor,
   ContextRequestInterceptor,
+  CorrelationIdInterceptor,
 } from './interceptors';
+import { CONTEXT_MODULE_CONFIG } from './constants';
+import { addContextDefaults, Context } from './context';
+
+export const createContextModule = (
+  config: ContextConfigType = {
+    type: ContextName.HTTP,
+    build: {},
+  },
+) => {
+  const { global = false, addDefaults = true } = config;
+  return {
+    module: ContextModule,
+    providers: [
+      {
+        provide: APP_INTERCEPTOR,
+        scope: Scope.REQUEST,
+        useClass: ContextRequestInterceptor,
+      },
+      {
+        provide: APP_INTERCEPTOR,
+        scope: Scope.REQUEST,
+        useClass: CorrelationIdInterceptor,
+      },
+      {
+        provide: CONTEXT_MODULE_CONFIG,
+        useValue: addDefaults ? addContextDefaults(config) : config,
+      },
+      Context,
+    ],
+    exports: [Context],
+    global,
+  };
+};
 
 @Module({})
 export class ContextModule {
-  static registerWithDefaults(
-    config: ConfigType = { type: ContextName.HTTP, build: {} },
-    isGlobal = false,
-  ) {
-    return ContextModule.register(config, true, isGlobal);
+  /**
+   * @deprecated
+   */
+  static registerWithDefaults(config?: ContextConfigType) {
+    return createContextModule(config);
   }
-  static register(config: ConfigType, addDefaults = false, isGlobal = false) {
-    const { imports = [], providers = [] } = config;
-    return {
-      module: ContextModule,
-      imports,
-      providers: [
-        ...providers,
-        {
-          provide: APP_INTERCEPTOR,
-          scope: Scope.REQUEST,
-          useClass: ContextRequestInterceptor,
-        },
-        {
-          provide: APP_INTERCEPTOR,
-          scope: Scope.REQUEST,
-          useClass: CorrelationIdInterceptor,
-        },
-        {
-          provide: CONTEXT_MODULE_CONFIG,
-          useValue: addDefaults ? addContextDefaults(config) : config,
-        },
-        {
-          provide: Context,
-          useFactory: (config: ConfigType, moduleRef: ModuleRef) =>
-            new Context(config, moduleRef),
-          inject: [CONTEXT_MODULE_CONFIG, ModuleRef],
-        },
-      ],
-      exports: [Context],
-      global: isGlobal,
-    };
+  static register(config?: ContextConfigType) {
+    return createContextModule(config);
   }
 }

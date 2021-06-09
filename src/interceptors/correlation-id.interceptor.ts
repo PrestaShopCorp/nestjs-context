@@ -13,13 +13,13 @@ import {
   HEADER_CORRELATION_ID,
 } from '../constants';
 import { Context } from '../context';
-import { ConfigType } from '../interfaces';
+import { ContextConfigType } from '../interfaces';
 
 @Injectable()
 export class CorrelationIdInterceptor implements NestInterceptor {
   constructor(
     private readonly context: Context,
-    @Inject(CONTEXT_MODULE_CONFIG) private readonly config: ConfigType,
+    @Inject(CONTEXT_MODULE_CONFIG) private readonly config: ContextConfigType,
   ) {}
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const headerName =
