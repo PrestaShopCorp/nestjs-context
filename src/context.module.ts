@@ -14,10 +14,16 @@ export const createContextModule = (
     build: {},
   },
 ) => {
-  const { global = false, addDefaults = true } = config;
+  const {
+    providers = [],
+    imports = [],
+    global = false,
+    addDefaults = true,
+  } = config;
   return {
     module: ContextModule,
     providers: [
+      ...providers,
       {
         provide: APP_INTERCEPTOR,
         scope: Scope.REQUEST,
@@ -34,6 +40,7 @@ export const createContextModule = (
       },
       Context,
     ],
+    imports,
     exports: [Context],
     global,
   };

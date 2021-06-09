@@ -9,7 +9,7 @@ import { convertToContextModule } from '../../../src';
 
 const contextConfig = {
   cached: true,
-  global: true, // change this value to see the side-effects
+  global: false, // change this value to see the side-effects
   addDefaults: true, // change this value to see the side-effects
   type: ContextName.HTTP,
   build: {

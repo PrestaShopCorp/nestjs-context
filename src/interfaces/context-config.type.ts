@@ -1,3 +1,4 @@
+import { ModuleMetadata } from '@nestjs/common';
 import {
   BuildContextFromCallbackType,
   BuildContextType,
@@ -8,6 +9,8 @@ type CommonConfig = {
   global?: boolean;
   cached?: boolean;
   addDefaults?: boolean;
+  providers?: ModuleMetadata['providers'];
+  imports?: ModuleMetadata['imports'];
   correlation_id?: {
     generator?: true | BuildContextFromCallbackType;
     header?: string;

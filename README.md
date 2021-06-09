@@ -79,20 +79,68 @@ values are LIFO of possible values for that property. A value can be defined usi
    [IContextPropertyProvider](./src/interfaces/context-property-provider.interface.ts).
    Provider::get will be called to build the value, passing request and property key as arguments to it
    
-** It only works if you convert your module into a ContextModule, as you will need its ModuleRef DI.
-See next version for more information.
+** It is a special case - see Context with Dependency injection for examples
 
 As possible values are LIFO, if the last value was null or undefined the context will try with the previous one, 
 and so successively. You can manually set values into context calling "Context::setCachedValue": set values will 
 take precedence over any other declared possible values.
 
 
-### Context with Dependency injection
+### Context with Dependency injection: provided properties
 
+The simplest way to add a property provider in your context is passing the "providers" to the context module.
+Notice that you will also need to pass its dependencies too:
+```typescript
+@Module({
+  imports: [
+    ContextModule.register({
+      type: ContextName.HTTP,
+      build: {
+        value: ['inside-imported'],
+        provided: [PropertyProvider],
+      },
+      // as PropertyProviders depends on PropertyProviderService, we pass both providers
+      providers: [PropertyProvider, PropertyProviderService],
+    }),
+  ],
+  controllers: [ImportedController],
+  providers: [ImportedService],
+  exports: [ImportedService],
+})
+export class ExampleModule {}
+```
+
+You could also pass "imports" to get all the exported providers from the given modules:
+```typescript
+@Module({
+  imports: [
+    ContextModule.register({
+      type: ContextName.HTTP,
+      build: {
+        value: ['inside-imported'],
+        provided: [PropertyProvider],
+      },
+      providers: [PropertyProvider],
+      // as PropertyProviders depends on MyModule, we pass the module too
+      imports: [MyModule.register()]
+    }),
+  ],
+  controllers: [ImportedController],
+  providers: [ImportedService],
+  exports: [ImportedService],
+})
+export class ExampleModule {}
+```
+
+It can be tedious to pass every dependency to the context. Especially at the application level, where you may be 
+adding the same dependencies to the context module and to the application main module. To reduce the boilerplate,
+we can convert our app to be a ContextModule itself, so the ModuleRef of the Context will be the same as the main
+module:
 ```typescript
 import {ContextConfigType} from "./context-config.type";
 
 const contextConfig: ContextConfigType = {
+  global: true, //this will cause the imported module contexts to use the main context instead
   type: ContextName.HTTP, 
   build: {
     host: ['req.headers.host'], // request path
@@ -116,10 +164,10 @@ export class ExampleModule {
   }
 }
 ```
-To be able to use the ModuleRef that refers to your module into the context module, you need to convert your module to 
-a context module. Be careful: by default, "convertToContextModule" will set your module name to "ContextModule", 
-and it can cause your module to be ignored if you are declaring other ContextModule imports as "global" before 
-loading yours. If you want to keep your module name instead, you must specify it explicitly: 
+Be careful: by default, "convertToContextModule" will set your module name to "ContextModule", if you are using 
+it for a module that is not the main module of the application, it could cause your module to be ignored -in the
+case there is another "global" context module that is being loaded before-. If you want to keep your module name 
+instead and to keep unique context for your application, you must specify it explicitly: 
 ```typescript
 @Module({})
 export class ExampleModule {
