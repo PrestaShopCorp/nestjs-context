@@ -101,7 +101,12 @@ export class Context {
       return context;
     }
     for (const key of Object.keys(this.build)) {
-      set(context, key, this.get(key));
+      // TODO this only works with \\. OR ., but not for both
+      if (key.includes('\\.')) {
+        context[key.replace('\\.', '.')] = this.get(key);
+      } else {
+        set(context, key, this.get(key));
+      }
     }
     // this.logger.debug(`Got context ${JSON.stringify(context)}`);
     return includeNull
