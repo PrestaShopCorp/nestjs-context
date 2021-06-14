@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { get, pickBy, set } from 'lodash';
 import { ContextConfigType, IContextPropertyProvider } from '../interfaces';
@@ -8,7 +8,6 @@ import { CONTEXT_MODULE_CONFIG } from '../constants';
 export class Context {
   private readonly build: ContextConfigType['build'];
   private cache: Map<string | symbol, any>;
-  private readonly logger = new Logger();
   public request: any = null;
 
   constructor(
@@ -17,7 +16,6 @@ export class Context {
     private readonly moduleRef?: ModuleRef,
   ) {
     this.build = config?.build || {};
-    this.logger.setContext(Context.name);
     this.clear();
   }
 
@@ -73,7 +71,11 @@ export class Context {
 
     // from callback
     if (typeof definition === 'function') {
-      return definition(this.request);
+      try {
+        return definition(this.request);
+      } catch (e) {
+        return null;
+      }
     }
 
     // from custom number or custom string value
@@ -108,7 +110,6 @@ export class Context {
         set(context, key, this.get(key));
       }
     }
-    // this.logger.debug(`Got context ${JSON.stringify(context)}`);
     return includeNull
       ? context
       : pickBy(context, (ctx) => ctx !== null && ctx !== undefined);
