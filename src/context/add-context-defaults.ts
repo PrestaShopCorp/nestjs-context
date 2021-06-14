@@ -43,7 +43,7 @@ const createHttpContextDefaults = (config: Partial<ContextConfigType>) => {
   };
   return {
     build,
-    cached: true,
+    cached: false,
   } as Partial<ContextConfigType>;
 };
 
