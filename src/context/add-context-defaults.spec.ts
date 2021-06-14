@@ -35,7 +35,7 @@ describe.each([
     it(`does not modify the rest of the config`, () => {
       const config = {
         type: contextName,
-        cached: true,
+        cached: false,
       };
       expect(
         omit(
