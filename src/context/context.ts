@@ -54,7 +54,7 @@ export class Context {
 
   private buildContextValue(key, definition) {
     // context set value
-    if (!!this.config.cached && this.isCached(key)) {
+    if (this.isCached(key)) {
       return this.getCachedValue(key);
     }
 
