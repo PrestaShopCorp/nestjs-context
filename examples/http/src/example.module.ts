@@ -14,6 +14,7 @@ const contextConfig = {
   type: ContextName.HTTP,
   build: {
     'multi_level.value': ['my-value'],
+    'single_level\\.value': ['my-value'],
     host_from_header: ['req.headers.host'],
     environment_from_value_or_query_or_header: [
       'req.headers.environment',
