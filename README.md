@@ -54,7 +54,7 @@ import { GetUser } from './context-providers';
   imports: [
     ContextModule.register({
       global: false,          // false by default; if true, it will be used for every module using ContextModule
-      cached: true,           // true by default; the values are calculated only once per request
+      cached: true,           // false by default; the values are calculated only once per request
       useDefaults: true,      // true by default; adds useful defaults to the context
       type: ContextName.HTTP, // Http by default
       build: {                // empty by default
