@@ -103,7 +103,7 @@ export class Context {
     for (const key of Object.keys(this.build)) {
       set(context, key, this.get(key));
     }
-    this.logger.debug(`Got context ${JSON.stringify(context)}`);
+    // this.logger.debug(`Got context ${JSON.stringify(context)}`);
     return includeNull
       ? context
       : pickBy(context, (ctx) => ctx !== null && ctx !== undefined);
