@@ -1,4 +1,5 @@
 import { ModuleMetadata } from '@nestjs/common';
+import { RouteInfo } from '@nestjs/common/interfaces';
 import { BuildContextType } from './build-context.type';
 import { ContextName } from './context-name.enum';
 
@@ -9,7 +10,7 @@ type CommonConfig = {
   providers?: ModuleMetadata['providers'];
   imports?: ModuleMetadata['imports'];
   correlation_id?: {
-    routes?: any;
+    routes?: RouteInfo;
     header?: string;
   };
 };

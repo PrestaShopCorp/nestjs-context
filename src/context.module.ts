@@ -1,10 +1,12 @@
 import {
+  Global,
   Inject,
   MiddlewareConsumer,
   Module,
   RequestMethod,
   Scope,
 } from '@nestjs/common';
+import { RouteInfo } from '@nestjs/common/interfaces';
 import { ContextConfigType, ContextName } from './interfaces';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import {
@@ -14,7 +16,6 @@ import {
 import { CONTEXT_MODULE_CONFIG } from './constants';
 import { addContextDefaults, Context } from './context';
 import { SetResponseCorrelationIdMiddleware } from './middlewares/set-response-correlation-id.middleware';
-import { Global } from '@nestjs/common';
 
 export const createContextModule = (
   config: ContextConfigType = {
@@ -64,7 +65,7 @@ export class ContextModule {
     if (this.alreadyRegister) {
       return;
     }
-    const allRoutes = {
+    const allRoutes: RouteInfo = {
       path: '*',
       method: RequestMethod.ALL,
     };
