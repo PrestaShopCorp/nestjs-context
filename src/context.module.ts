@@ -1,12 +1,21 @@
-import { Module, Scope } from '@nestjs/common';
+import {
+  Global,
+  Inject,
+  MiddlewareConsumer,
+  Module,
+  RequestMethod,
+  Scope,
+} from '@nestjs/common';
+import { RouteInfo } from '@nestjs/common/interfaces';
 import { ContextConfigType, ContextName } from './interfaces';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import {
   ContextRequestInterceptor,
-  CorrelationIdInterceptor,
+  GenerateCorrelationIdMiddleware,
 } from './interceptors';
 import { CONTEXT_MODULE_CONFIG } from './constants';
 import { addContextDefaults, Context } from './context';
+import { SetResponseCorrelationIdMiddleware } from './middlewares/set-response-correlation-id.middleware';
 
 export const createContextModule = (
   config: ContextConfigType = {
@@ -14,12 +23,7 @@ export const createContextModule = (
     build: {},
   },
 ) => {
-  const {
-    providers = [],
-    imports = [],
-    global = false,
-    addDefaults = true,
-  } = config;
+  const { providers = [], imports = [], addDefaults = true } = config;
   return {
     module: ContextModule,
     providers: [
@@ -30,11 +34,6 @@ export const createContextModule = (
         useClass: ContextRequestInterceptor,
       },
       {
-        provide: APP_INTERCEPTOR,
-        scope: Scope.REQUEST,
-        useClass: CorrelationIdInterceptor,
-      },
-      {
         provide: CONTEXT_MODULE_CONFIG,
         useValue: addDefaults ? addContextDefaults(config) : config,
       },
@@ -42,12 +41,17 @@ export const createContextModule = (
     ],
     imports,
     exports: [Context],
-    global,
+    global: true,
   };
 };
 
+@Global()
 @Module({})
 export class ContextModule {
+  private alreadyRegister = false;
+  constructor(
+    @Inject(CONTEXT_MODULE_CONFIG) private readonly config: ContextConfigType,
+  ) {}
   /**
    * @deprecated
    */
@@ -56,5 +60,18 @@ export class ContextModule {
   }
   static register(config?: ContextConfigType) {
     return createContextModule(config);
+  }
+  configure(consumer: MiddlewareConsumer) {
+    if (this.alreadyRegister) {
+      return;
+    }
+    const allRoutes: RouteInfo = {
+      path: '*',
+      method: RequestMethod.ALL,
+    };
+    const routes = this.config?.correlation_id?.routes ?? allRoutes;
+    consumer.apply(SetResponseCorrelationIdMiddleware).forRoutes(allRoutes);
+    consumer.apply(GenerateCorrelationIdMiddleware).forRoutes(routes);
+    this.alreadyRegister = true;
   }
 }

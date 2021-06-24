@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { get, pickBy, set } from 'lodash';
+import { get, invert, pick, pickBy, set } from 'lodash';
 import { ContextConfigType, IContextPropertyProvider } from '../interfaces';
 import { CONTEXT_MODULE_CONFIG } from '../constants';
 
@@ -113,5 +113,16 @@ export class Context {
     return includeNull
       ? context
       : pickBy(context, (ctx) => ctx !== null && ctx !== undefined);
+  }
+
+  createView(mapping) {
+    const labelsMapping = invert(mapping);
+    const toPick = Object.keys(labelsMapping);
+    const subContext = pick(this.getAll(), toPick);
+    const view: Record<string, any> = {};
+    toPick.forEach((ctxProperty) => {
+      view[labelsMapping[ctxProperty]] = get(subContext, ctxProperty);
+    });
+    return view;
   }
 }

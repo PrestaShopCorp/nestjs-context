@@ -18,18 +18,13 @@ import {
   HEADER_CONTENT_TYPE,
   HEADER_CORRELATION_ID,
 } from '../constants';
-import { correlationIdGenerator } from '../tools';
 
 // TODO JDM add stackdrive and information needed for cloud events
 
 const createHttpContextDefaults = (config: Partial<ContextConfigType>) => {
-  const { generator = null, header = HEADER_CORRELATION_ID } =
-    config?.correlation_id ?? {};
+  const { header = HEADER_CORRELATION_ID } = config?.correlation_id ?? {};
   const build = {
-    [CONTEXT_CORRELATION_ID]: [
-      generator === true ? correlationIdGenerator : generator,
-      `req.${HttpProp.HEADERS}.${header}`,
-    ],
+    [CONTEXT_CORRELATION_ID]: [`req.${HttpProp.HEADERS}.${header}`],
     [CONTEXT_PLATFORM]: [platform()],
     [CONTEXT_HOSTNAME]: [hostname(), 'req.hostname'],
     [CONTEXT_BIN]: [

@@ -14,25 +14,27 @@ import {
 } from '../constants';
 import { Context } from '../context';
 import { ContextConfigType } from '../interfaces';
+import { NestMiddleware } from '@nestjs/common';
 
 @Injectable()
-export class CorrelationIdInterceptor implements NestInterceptor {
+export class SetResponseCorrelationIdMiddleware implements NestMiddleware {
   constructor(
     private readonly context: Context,
     @Inject(CONTEXT_MODULE_CONFIG) private readonly config: ContextConfigType,
   ) {}
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const headerName =
-      this.config?.correlation_id?.header ?? HEADER_CORRELATION_ID;
+  protected setResponseCorrelationId(response: any) {
+    const headerName = startCase(
+      this.config?.correlation_id?.header ?? HEADER_CORRELATION_ID,
+    ).replace(/ /g, '-');
     if (!!this.context.get(CONTEXT_CORRELATION_ID)) {
-      context
-        .switchToHttp()
-        .getResponse()
-        .set(
-          startCase(headerName).replace(/ /g, '-'),
-          this.context.get(CONTEXT_CORRELATION_ID),
-        );
+      response.set(
+        startCase(headerName).replace(/ /g, '-'),
+        this.context.get(CONTEXT_CORRELATION_ID),
+      );
     }
-    return next.handle();
+  }
+  use(req: any, res: any, next: () => void) {
+    this.setResponseCorrelationId(res);
+    next();
   }
 }

@@ -2,12 +2,10 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { omit } from 'lodash';
 import { addAutomaticBuild } from '../tools';
 import { Context, getContextRequest } from '../context';
-import { BuildDtoType, ContextName, OptionalType } from '../interfaces';
+import { BuildDtoType, ContextName } from '../interfaces';
 
 type EasyOptions = BuildDtoType['build'];
-type BuildDtoDecoratorOptions =
-  | OptionalType<BuildDtoType, 'type'>
-  | EasyOptions;
+type BuildDtoDecoratorOptions = BuildDtoType | EasyOptions;
 
 const hasEasyOptions = (
   args: BuildDtoDecoratorOptions,
@@ -35,7 +33,7 @@ export const buildDtoFullOptions = (
   const type = options.type ?? ContextName.HTTP;
   return hasEasyOptions(options)
     ? ({ type, build: options } as BuildDtoType)
-    : ({ type, ...options } as BuildDtoType);
+    : ({ ...options, type, build: options?.build ?? {} } as BuildDtoType);
 };
 
 export const BuildDto = createParamDecorator<BuildDtoDecoratorOptions>(

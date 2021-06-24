@@ -1,8 +1,6 @@
 import { ModuleMetadata } from '@nestjs/common';
-import {
-  BuildContextFromCallbackType,
-  BuildContextType,
-} from './build-context.type';
+import { RouteInfo } from '@nestjs/common/interfaces';
+import { BuildContextType } from './build-context.type';
 import { ContextName } from './context-name.enum';
 
 type CommonConfig = {
@@ -12,7 +10,7 @@ type CommonConfig = {
   providers?: ModuleMetadata['providers'];
   imports?: ModuleMetadata['imports'];
   correlation_id?: {
-    generator?: true | BuildContextFromCallbackType;
+    routes?: RouteInfo;
     header?: string;
   };
 };

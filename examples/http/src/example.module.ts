@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, RequestMethod } from '@nestjs/common';
 import { Request } from 'express';
 import { ContextConfigType, ContextName } from '../../../src';
 import { ExampleController } from './example.controller';
@@ -26,7 +26,10 @@ const contextConfig = {
   },
   correlation_id: {
     //header: 'use-this-instead-of-x-correlation-id',
-    generator: true,
+    routes: {
+      path: '*',
+      method: RequestMethod.ALL,
+    },
   },
 } as ContextConfigType;
 
