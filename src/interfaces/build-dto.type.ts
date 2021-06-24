@@ -1,7 +1,8 @@
 import { ContextConfigType } from './context-config.type';
-import { OptionalType } from './optional.type';
 
-export type BuildDtoType = OptionalType<ContextConfigType, 'build'> & {
+export type BuildDtoType = Partial<
+  Pick<ContextConfigType, 'build' | 'type'>
+> & {
   target?: any;
   auto?: {
     enabled: boolean;

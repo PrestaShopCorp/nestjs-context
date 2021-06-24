@@ -26,7 +26,7 @@ const contextConfig = {
   },
   correlation_id: {
     //header: 'use-this-instead-of-x-correlation-id',
-    generator: true,
+    auto: true,
   },
 } as ContextConfigType;
 
