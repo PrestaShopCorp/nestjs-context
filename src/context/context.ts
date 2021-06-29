@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { v4 } from 'uuid';
 import { ModuleRef } from '@nestjs/core';
 import { get, invert, pick, pickBy, set } from 'lodash';
 import { ContextConfigType, IContextPropertyProvider } from '../interfaces';
@@ -6,6 +7,7 @@ import { CONTEXT_MODULE_CONFIG } from '../constants';
 
 @Injectable()
 export class Context {
+  private id: string;
   private readonly build: ContextConfigType['build'];
   private cache: Map<string | symbol, any>;
   public request: any = null;
@@ -15,8 +17,13 @@ export class Context {
     private readonly config: ContextConfigType,
     private readonly moduleRef?: ModuleRef,
   ) {
+    this.id = v4();
     this.build = config?.build || {};
     this.clear();
+  }
+
+  getId() {
+    return this.id;
   }
 
   setCachedValue(key: string | symbol, value: any) {
