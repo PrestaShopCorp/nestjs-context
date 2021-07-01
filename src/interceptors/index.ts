@@ -1,2 +1,2 @@
 export * from '../middlewares/generate-correlation-id.middleware';
-export * from './context-request.interceptor';
+export * from './clear-context-request-interceptor.service';

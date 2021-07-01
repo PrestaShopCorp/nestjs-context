@@ -10,12 +10,13 @@ import { RouteInfo } from '@nestjs/common/interfaces';
 import { ContextConfigType, ContextName } from './interfaces';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import {
-  ContextRequestInterceptor,
+  ClearContextRequestInterceptor,
   GenerateCorrelationIdMiddleware,
 } from './interceptors';
 import { CONTEXT_MODULE_CONFIG } from './constants';
 import { addContextDefaults, Context } from './context';
 import { SetResponseCorrelationIdMiddleware } from './middlewares/set-response-correlation-id.middleware';
+import { SetContextRequestMiddleware } from './middlewares/set-context-request.middleware';
 
 export const createContextModule = (
   config: ContextConfigType = {
@@ -31,7 +32,7 @@ export const createContextModule = (
       {
         provide: APP_INTERCEPTOR,
         scope: Scope.REQUEST,
-        useClass: ContextRequestInterceptor,
+        useClass: ClearContextRequestInterceptor,
       },
       {
         provide: CONTEXT_MODULE_CONFIG,
@@ -72,6 +73,7 @@ export class ContextModule {
     const routes = this.config?.correlation_id?.routes ?? allRoutes;
     consumer.apply(SetResponseCorrelationIdMiddleware).forRoutes(allRoutes);
     consumer.apply(GenerateCorrelationIdMiddleware).forRoutes(routes);
+    consumer.apply(SetContextRequestMiddleware).forRoutes(allRoutes);
     this.alreadyRegister = true;
   }
 }
