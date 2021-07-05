@@ -22,7 +22,6 @@ export class ClearContextRequestInterceptor implements NestInterceptor {
     // this.context.setRequest(getContextRequest(this.config.type, context));
     return next.handle().pipe(
       tap(() => {
-        this.context.setRequest(null);
         this.context.clear();
       }),
     );

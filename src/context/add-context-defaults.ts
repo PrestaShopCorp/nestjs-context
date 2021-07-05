@@ -49,7 +49,7 @@ export const addContextDefaults: (
 
   switch (type) {
     case ContextName.HTTP:
-      return merge(config, createHttpContextDefaults(config));
+      return merge(createHttpContextDefaults(config), config);
     default:
       return config;
   }
