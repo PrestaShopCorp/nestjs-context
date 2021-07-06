@@ -41,7 +41,12 @@ export class Context {
 
   clear() {
     this.cache = new Map<string | symbol, any>();
+    this.setRequest(null);
     return this;
+  }
+
+  isCleared() {
+    return this.request === null && this.cache.size === 0;
   }
 
   public setRequest(request: any) {

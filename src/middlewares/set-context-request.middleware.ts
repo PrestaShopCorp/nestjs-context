@@ -11,7 +11,9 @@ export class SetContextRequestMiddleware implements NestMiddleware {
     @Inject(CONTEXT_MODULE_CONFIG) private readonly config: ContextConfigType,
   ) {}
   use(req: any, res: any, next: () => void) {
-    this.context.setRequest(req);
+    if (this.context.isCleared()) {
+      this.context.setRequest(req);
+    }
     next();
   }
 }
