@@ -1,9 +1,10 @@
+import { uuid } from 'short-uuid';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { omit } from 'lodash';
 import { addAutomaticBuild } from '../tools';
-import { Context, getContextRequest } from '../context';
-import { BuildDtoType, ContextName } from '../interfaces';
-
+import { Context, ContextContainer } from '../context';
+import { BuildDtoType, ContextConfigType, ContextName } from '../interfaces';
+import { getContextRequest } from '../helpers';
 type EasyOptions = BuildDtoType['build'];
 type BuildDtoDecoratorOptions = BuildDtoType | EasyOptions;
 
@@ -20,11 +21,15 @@ export const buildDtoFactory = (
 ) => {
   const { target, auto = { enabled: false }, build = {} } = options;
   const { enabled: isAuto = false } = auto;
-  const config = {
+  const config: ContextConfigType = {
     ...omit(options, ['target', 'auto']),
     build: isAuto && !!target ? addAuto(build, options) : build,
   };
-  return new Context(config).setRequest(request).getAll();
+  return new Context(
+    `build-dto-${ContextContainer.getId(request)}-${uuid()}`,
+    config,
+    request,
+  ).getAll();
 };
 
 export const buildDtoFullOptions = (

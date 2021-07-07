@@ -17,6 +17,8 @@ import {
   CONTEXT_PROTOCOL,
   HEADER_CONTENT_TYPE,
   HEADER_CORRELATION_ID,
+  CONTEXT_REQUEST_ID,
+  HEADER_REQUEST_ID,
 } from '../constants';
 
 // TODO JDM add stackdrive and information needed for cloud events
@@ -24,6 +26,11 @@ import {
 const createHttpContextDefaults = (config: Partial<ContextConfigType>) => {
   const { header = HEADER_CORRELATION_ID } = config?.correlation_id ?? {};
   const build = {
+    // TODO fallback must disappear for this context when we create other contexts !
+    [CONTEXT_REQUEST_ID]: [
+      `req.${HEADER_REQUEST_ID}`,
+      `req.${HttpProp.HEADERS}.${HEADER_REQUEST_ID}`,
+    ],
     [CONTEXT_CORRELATION_ID]: [`req.${HttpProp.HEADERS}.${header}`],
     [CONTEXT_PLATFORM]: [platform()],
     [CONTEXT_HOSTNAME]: [hostname(), 'req.hostname'],
@@ -42,7 +49,7 @@ const createHttpContextDefaults = (config: Partial<ContextConfigType>) => {
   } as Partial<ContextConfigType>;
 };
 
-export const addContextDefaults: (
+export const addContextConfigDefaults: (
   config: Partial<ContextConfigType> & { type: ContextConfigType['type'] },
 ) => ContextConfigType = (config) => {
   const { type } = config;

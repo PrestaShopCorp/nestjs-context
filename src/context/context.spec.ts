@@ -29,8 +29,7 @@ describe('Context', () => {
     type: ContextName.HTTP,
     build,
   };
-  const context = new Context(config, moduleRef);
-  context.setRequest(request);
+  const context = new Context('random-id', config, request, moduleRef);
   const ctxPayloadWithoutNull = {
     value: build.value[1],
     fallback: build.fallback[0],

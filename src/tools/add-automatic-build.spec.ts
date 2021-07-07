@@ -1,6 +1,6 @@
 import { addAutomaticBuild } from './add-automatic-build';
 import { ContextName } from '../interfaces';
-import { getContextDefaultAutoBuildPath } from '../context';
+import { getContextDefaultAutoBuildPath } from '../helpers';
 
 describe('addAutomaticBuild', () => {
   class Target {

@@ -1,7 +1,7 @@
-import { correlationIdGenerator } from './correlation-id-generator';
+import { generateId } from './generate-id';
 
 describe('correlationIdGenerator', () => {
   it('Generates a correlation id', () => {
-    expect(correlationIdGenerator({})).toStrictEqual(expect.any(String));
+    expect(generateId({})).toStrictEqual(expect.any(String));
   });
 });
