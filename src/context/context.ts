@@ -32,7 +32,7 @@ export class Context {
     return this.cache[key] ?? null;
   }
 
-  private isCached(key: string | symbol): boolean {
+  isCached(key: string | symbol): boolean {
     return typeof this.cache[key] !== 'undefined';
   }
 
