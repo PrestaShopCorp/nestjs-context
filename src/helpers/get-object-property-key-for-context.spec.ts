@@ -5,7 +5,7 @@ import { getObjectPropertyKeyForContext } from './get-object-property-key-for-co
 describe('getObjectPropertyKeyForContext', () => {
   it(`gets the given object property key that contains a ${Context.name} instance`, () => {
     class Test {
-      private readonly context: Context = new Context(null, null);
+      private readonly context: Context = new Context(null, null, null);
     }
     expect(getObjectPropertyKeyForContext(new Test())).toBe('context');
   });

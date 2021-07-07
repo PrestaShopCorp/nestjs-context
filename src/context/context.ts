@@ -1,25 +1,22 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { v4 } from 'uuid';
 import { ModuleRef } from '@nestjs/core';
 import { get, invert, pick, pickBy, set } from 'lodash';
-import { ContextConfigType, IContextPropertyProvider } from '../interfaces';
-import { CONTEXT_MODULE_CONFIG } from '../constants';
+import {
+  ContextConfigType,
+  IContextPropertyProvider,
+  RequestType,
+} from '../interfaces';
 
-@Injectable()
 export class Context {
-  private id: string;
+  private readonly cache: Map<string | symbol, any> = new Map();
   private readonly build: ContextConfigType['build'];
-  private cache: Map<string | symbol, any>;
-  public request: any = null;
 
   constructor(
-    @Inject(CONTEXT_MODULE_CONFIG)
+    private readonly id: number | string | Symbol,
     private readonly config: ContextConfigType,
+    public readonly request: RequestType,
     private readonly moduleRef?: ModuleRef,
   ) {
-    this.id = v4();
     this.build = config?.build || {};
-    this.clear();
   }
 
   getId() {
@@ -37,21 +34,6 @@ export class Context {
 
   isCached(key: string | symbol): boolean {
     return typeof this.cache[key] !== 'undefined';
-  }
-
-  clear() {
-    this.cache = new Map<string | symbol, any>();
-    this.setRequest(null);
-    return this;
-  }
-
-  isCleared() {
-    return this.request === null && this.cache.size === 0;
-  }
-
-  public setRequest(request: any) {
-    this.request = request;
-    return this;
   }
 
   private getProvider(name): IContextPropertyProvider {
@@ -127,7 +109,7 @@ export class Context {
       : pickBy(context, (ctx) => ctx !== null && ctx !== undefined);
   }
 
-  createView(mapping) {
+  createView(mapping: any) {
     const labelsMapping = invert(mapping);
     const toPick = Object.keys(labelsMapping);
     const subContext = pick(this.getAll(), toPick);

@@ -6,7 +6,7 @@ import {
   HEADER_CORRELATION_ID,
 } from '../constants';
 import { ContextConfigType } from '../interfaces';
-import { correlationIdGenerator } from '../tools';
+import { generateId } from '../tools';
 import { Context } from '../context';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class GenerateCorrelationIdMiddleware implements NestMiddleware {
   ) {}
   protected generateCorrelationId(request) {
     if (!request.headers[HEADER_CORRELATION_ID]) {
-      const correlationId = correlationIdGenerator();
+      const correlationId = generateId();
       request.headers[HEADER_CORRELATION_ID] = correlationId;
       this.context.setCachedValue(CONTEXT_CORRELATION_ID, correlationId);
     }

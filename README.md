@@ -38,7 +38,7 @@ export class ExampleModule {}
 
 - Check all the [config options](src/interfaces/context-config.type.ts) for further information about available
   configurations
-- Check the [defaults](src/context/add-context-defaults.ts) for further information about defaults
+- Check the [defaults](src/context/add-context-config-defaults.ts) for further information about defaults
 
 
 ## Advanced Usage
@@ -292,7 +292,7 @@ export class ExampleController {
 - By default, auto build is disabled.
 - By default, the properties declared in "build" are excluded from "auto" build, if you want to include
   auto-build as a fallback of the "build" properties, just set ```is_fallback: true```.
-- Every context has a default request "path" ([more info here](src/context/get-context-default-auto-build-path.ts))
+- Every context has a default request "path" ([more info here](src/helpers/context/get-context-default-auto-build-path.ts))
   to look for the auto-built properties. Note that here it is not necessary to include the "req." prefix.
 
 ### Attention!

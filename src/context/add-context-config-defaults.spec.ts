@@ -8,10 +8,12 @@ import {
   CONTEXT_PATH,
   CONTEXT_PLATFORM,
   CONTEXT_PROTOCOL,
+  CONTEXT_REQUEST_ID,
 } from '../constants';
-import { addContextDefaults } from './add-context-defaults';
+import { addContextConfigDefaults } from './add-context-config-defaults';
 
 const httpDefaults = [
+  CONTEXT_REQUEST_ID,
   CONTEXT_CORRELATION_ID,
   CONTEXT_PLATFORM,
   CONTEXT_HOSTNAME,
@@ -29,7 +31,9 @@ describe.each([
   (contextName: ContextName, defaults: string[]) => {
     it(`adds build config for: ${defaults.join(', ')}`, () => {
       expect(
-        Object.keys(addContextDefaults({ type: contextName, build: {} }).build),
+        Object.keys(
+          addContextConfigDefaults({ type: contextName, build: {} }).build,
+        ),
       ).toStrictEqual(defaults);
     });
     it(`does not modify the rest of the config`, () => {
@@ -39,7 +43,7 @@ describe.each([
       };
       expect(
         omit(
-          addContextDefaults({
+          addContextConfigDefaults({
             ...config,
             build: {},
           }),

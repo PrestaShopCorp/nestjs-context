@@ -1,5 +1,5 @@
 import { getContextRequest } from './get-context.request';
-import { ContextName } from '../interfaces';
+import { ContextName } from '../../interfaces';
 import { ExecutionContext } from '@nestjs/common';
 
 describe('getContextRequest', () => {

@@ -1,2 +1,2 @@
 export * from './add-automatic-build';
-export * from './correlation-id-generator';
+export * from './generate-id';

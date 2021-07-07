@@ -1,6 +1,6 @@
 import { get, merge, omit } from 'lodash';
 import { BuildDtoType } from '../interfaces';
-import { getContextDefaultAutoBuildPath } from '../context';
+import { getContextDefaultAutoBuildPath } from '../helpers';
 
 const getContextPropertyCallback = (path) => (request) => get(request, path);
 

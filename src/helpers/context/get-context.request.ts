@@ -1,5 +1,5 @@
 import { ExecutionContext } from '@nestjs/common';
-import { ContextName } from '../interfaces';
+import { ContextName } from '../../interfaces';
 
 export const getContextRequest = (type: ContextName, ctx: ExecutionContext) => {
   const mapping = {

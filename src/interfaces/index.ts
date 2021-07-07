@@ -6,3 +6,4 @@ export * from './context-property-provider.interface';
 export * from './gql-context-request-property.enum';
 export * from './http-context-request-property.enum';
 export * from './dependency-injection.type';
+export * from './request.type';

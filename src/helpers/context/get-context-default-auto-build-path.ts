@@ -1,4 +1,4 @@
-import { ContextName, HttpContextRequestProperty } from '../interfaces';
+import { ContextName, HttpContextRequestProperty } from '../../interfaces';
 
 export const getContextDefaultAutoBuildPath = (type: ContextName) => {
   const defaults = {
