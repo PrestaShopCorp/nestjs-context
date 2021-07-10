@@ -105,7 +105,7 @@ Notice that you will also need to pass its dependencies too:
   controllers: [ImportedController],
   providers: [ImportedService],
   exports: [ImportedService],
-})global
+})
 export class ExampleModule {}
 ```
 
