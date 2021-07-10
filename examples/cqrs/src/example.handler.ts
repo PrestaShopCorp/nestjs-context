@@ -1,18 +1,17 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { AddCorrelationId, Context, CorrelationId } from '../../../src';
 import { ExampleCommand } from './example.command';
+import { ExampleService } from './example.service';
+import { ContextAware, CorrelationId } from '../../../src';
 
-@AddCorrelationId('metadata.correlation_id')
 @CommandHandler(ExampleCommand)
+@ContextAware()
 export class ExampleHandler implements ICommandHandler<ExampleCommand> {
   @CorrelationId()
   private declare readonly correlationId;
-  private readonly metadata;
-  constructor(private readonly context: Context) {}
+  constructor(private readonly service: ExampleService) {}
   async execute(command: ExampleCommand) {
-    // console.log(this.correlationId);
-    // console.log(this.metadata);
-    // console.log(this.context.getAll());
+    console.log(`Reading correlation-id from context: ${this.correlationId}`);
+    this.service.log();
     return command;
   }
 }
