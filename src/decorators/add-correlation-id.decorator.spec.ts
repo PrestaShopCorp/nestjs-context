@@ -1,37 +1,36 @@
 import { AddCorrelationId } from './add-correlation-id.decorator';
-import { Context } from '../context';
 import { contextInstanceMock } from '../tests/mocks/context-instance.mock';
 import { CONTEXT_CORRELATION_ID } from '../constants';
+import { __context } from './context-aware.mixin';
 
-describe('@AddCorrelationId', () => {
-  it('throws an error if context DI is not present in the targeted class', () => {
-    try {
-      @AddCorrelationId('metadata.correlationId')
-      class WithoutContext {
-        private readonly metadata;
-      }
-    } catch (e) {
-      expect(e).toBeInstanceOf(Error);
-    }
+describe(`@${AddCorrelationId.name}`, () => {
+  @AddCorrelationId('correlationId')
+  class WithPropertyClass {
+    public readonly correlationId;
+  }
+  it(`should enhance component with __context metadata`, () => {
+    expect(Reflect.getMetadata(__context, WithPropertyClass)).toBeTruthy();
   });
-  it('hydrates the correlation id from the context into a property', () => {
+  it('should get the value of correlation-id property from the context', () => {
     @AddCorrelationId('correlationId')
     class WithPropertyClass {
       public readonly correlationId;
-      constructor(private readonly context: Context = contextInstanceMock) {}
     }
+    const instance = new WithPropertyClass();
+    // mock context
+    instance[__context] = contextInstanceMock;
     // the mockup get returns the key instead of the value, so we can test it
-    expect(new WithPropertyClass().correlationId).toBe(CONTEXT_CORRELATION_ID);
+    expect(instance.correlationId).toBe(CONTEXT_CORRELATION_ID);
   });
-  it('hydrates the correlation id from the context into a sub-property', () => {
-    @AddCorrelationId('metadata.correlationId')
+  it('should get the value of correlation-id sub-property from the context', () => {
+    @AddCorrelationId('metadata.correlation_id')
     class WithPropertyClass {
       public readonly metadata;
-      constructor(private readonly context: Context = contextInstanceMock) {}
     }
+    const instance = new WithPropertyClass();
+    // mock context
+    instance[__context] = contextInstanceMock;
     // the mockup get returns the key instead of the value, so we can test it
-    expect(new WithPropertyClass().metadata.correlationId).toBe(
-      CONTEXT_CORRELATION_ID,
-    );
+    expect(instance.metadata.correlation_id).toBe(CONTEXT_CORRELATION_ID);
   });
 });
