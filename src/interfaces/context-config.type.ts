@@ -4,7 +4,6 @@ import { BuildContextType } from './build-context.type';
 import { ContextName } from './context-name.enum';
 
 type CommonConfig = {
-  global?: boolean;
   cached?: boolean;
   addDefaults?: boolean;
   providers?: ModuleMetadata['providers'];

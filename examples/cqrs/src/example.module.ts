@@ -4,9 +4,10 @@ import { Request } from 'express';
 import { ContextModule, ContextName } from '../../../src';
 import { ExampleController } from './example.controller';
 import { ExampleHandler } from './example.handler';
+import { ExampleService } from './example.service';
 
 @Module({
-  providers: [ExampleHandler],
+  providers: [ExampleHandler, ExampleService],
   imports: [
     ContextModule.register({
       type: ContextName.HTTP,

@@ -53,7 +53,6 @@ import { GetUser } from './context-providers';
 @Module({
   imports: [
     ContextModule.register({
-      global: false,          // false by default; if true, it will be used for every module using ContextModule
       cached: true,           // false by default; the values are calculated only once per request
       useDefaults: true,      // true by default; adds useful defaults to the context
       type: ContextName.HTTP, // Http by default
@@ -140,7 +139,6 @@ module:
 import {ContextConfigType} from "./context-config.type";
 
 const contextConfig: ContextConfigType = {
-  global: true, //this will cause the imported module contexts to use the main context instead
   type: ContextName.HTTP, 
   build: {
     host: ['req.headers.host'], // request path
@@ -166,7 +164,7 @@ export class ExampleModule {
 ```
 Be careful: by default, "convertToContextModule" will set your module name to "ContextModule", if you are using 
 it for a module that is not the main module of the application, it could cause your module to be ignored -in the
-case there is another "global" context module that is being loaded before-. If you want to keep your module name 
+case there is another context module that is being loaded before-. If you want to keep your module name 
 instead and to keep unique context for your application, you must specify it explicitly: 
 ```typescript
 @Module({})
@@ -215,27 +213,27 @@ import { GetUser } from './context-providers';
 export class ExampleModule {}
 ```
 
-### Getting the correlation-id into a class property 
+### Getting the correlation-id into a provider property 
 
-- Note: you need to add Context as DI to use this decorator
+- Note: you need to decorate your class with @ContextAware to use this decorator
 - Note: this decorator converts your object property into an accessor descriptor instead of 
 data descriptor.
 - Note: you must use "declare" if you have declared "useDefineForClassFields": true in your
 tsconfig
+
 ```typescript
-import { CorrelationId } from 'nestjs-context'; 
+import {CorrelationId, ContextAware} from 'nestjs-context';
 
 @Injectable()
+@ContextAware()
 export class MyProvider {
   @CorrelationId()
   private declare readonly correlationId;
-  constructor(private readonly ctx: Context) {}
 }
 ```
 
-### Getting the correlation-id into class sub-property
+### Getting the correlation-id into a provider sub-property
 
-- Note: you need to add Context as DI to use this decorator
 - Note: this decorator converts your object property into an accessor descriptor instead of
 data descriptor, and it will use another data descriptor as backup for the rest of sub-properties
 ```typescript
@@ -245,7 +243,6 @@ import { AddCorrelationId } from 'nestjs-context';
 @AddCorrelationId('property.correlation_id')
 export class MyProvider {
   private readonly property; // property.correlation_id will be created
-  constructor(private readonly ctx: Context) {}
 }
 ```
 
