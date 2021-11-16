@@ -41,7 +41,7 @@ const createHttpContextDefaults = (config: Partial<ContextConfigType>) => {
     ],
     [CONTEXT_PATH]: [
       (req: Request) =>
-        req && req.baseUrl ? `${req.baseUrl}${req.path || '/'}` : '/',
+        req?.baseUrl ? `${req.baseUrl}${req.path || '/'}` : '/',
     ],
     [CONTEXT_PROTOCOL]: ['req.protocol'],
     [CONTEXT_CONTENT_TYPE]: [`req.${HttpProp.HEADERS}.${HEADER_CONTENT_TYPE}`],
