@@ -1,11 +1,7 @@
 import {
-  CallHandler,
-  ExecutionContext,
   Inject,
   Injectable,
-  NestInterceptor,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { startCase } from 'lodash';
 import {
   CONTEXT_CORRELATION_ID,
@@ -18,10 +14,12 @@ import { NestMiddleware } from '@nestjs/common';
 
 @Injectable()
 export class SetResponseCorrelationIdMiddleware implements NestMiddleware {
+
   constructor(
     private readonly context: Context,
     @Inject(CONTEXT_MODULE_CONFIG) private readonly config: ContextConfigType,
   ) {}
+
   protected setResponseCorrelationId(response: any) {
     const headerName = startCase(
       this.config?.correlation_id?.header ?? HEADER_CORRELATION_ID,
@@ -33,6 +31,7 @@ export class SetResponseCorrelationIdMiddleware implements NestMiddleware {
       );
     }
   }
+
   use(req: any, res: any, next: () => void) {
     this.setResponseCorrelationId(res);
     next();

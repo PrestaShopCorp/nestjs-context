@@ -8,41 +8,59 @@ import { generateId } from '../tools';
 @Injectable()
 export class ContextContainer {
   private contexts: Record<string, Context> = {};
-  private contextStack: string[] = [];
 
   constructor(
     @Inject(CONTEXT_MODULE_CONFIG) private readonly config: ContextConfigType,
     private readonly moduleRef?: ModuleRef,
   ) {}
+
   static getId(request: RequestType): string {
     if (!!request.headers) {
       return request.headers[HEADER_REQUEST_ID] as string;
     }
     return request[HEADER_REQUEST_ID];
   }
-  private getCurrentId() {
-    return this.contextStack[this.contextStack.length - 1];
+
+  createContextFromRequest(request: RequestType) {
+    const contextId = ContextContainer.getId(request);
+
+    return new Context(contextId, this.config, request, this.moduleRef);
   }
-  current() {
-    /// @todo jdm : this should return null as fallback and we should be using create-context decorators instead
-    const request: RequestType = {
-      [HEADER_REQUEST_ID]: generateId(),
+
+  createNonHttpContext() {
+    const contextId = generateId();
+    const emptyRequest: RequestType = {
+      [HEADER_REQUEST_ID]: contextId,
     };
-    return this.contextStack.length
-      ? this.contexts[this.getCurrentId()]
-      : this.add(request);
+
+    return new Context(contextId, this.config, emptyRequest, this.moduleRef);
   }
-  get(request: RequestType) {
-    return this.contexts[ContextContainer.getId(request)] ?? null;
+
+  createAndAddContextFromRequest(request: RequestType) {
+    const context = this.createContextFromRequest(request);
+    this.addContext(context);
   }
-  add(request: RequestType) {
-    const id = ContextContainer.getId(request);
-    this.contextStack.push(id);
-    this.contexts[id] = new Context(id, this.config, request, this.moduleRef);
-    return this.contexts[id];
+
+  addContext(context: Context) {
+    this.contexts[context.getId()] = context;
   }
-  remove(request: RequestType) {
-    delete this.contexts[ContextContainer.getId(request)];
-    this.contextStack.pop();
+
+  getContextFromId(contextId: string) {
+    return this.contexts[contextId] ?? null;
+  }
+
+  getContextFromRequest(request: RequestType) {
+    const contextId = ContextContainer.getId(request)
+    return this.getContextFromId(contextId);
+  }
+
+  removeContextFromRequest(request: RequestType) {
+    const contextId = ContextContainer.getId(request);
+
+    delete this.contexts[contextId];
+  }
+
+  getContextsSize() {
+    return Object.keys(this.contexts).length;
   }
 }

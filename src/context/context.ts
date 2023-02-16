@@ -11,7 +11,7 @@ export class Context {
   private readonly build: ContextConfigType['build'];
 
   constructor(
-    private readonly id: number | string | Symbol,
+    private readonly id: number | string,
     private readonly config: ContextConfigType,
     public readonly request: RequestType,
     private readonly moduleRef?: ModuleRef,
@@ -83,6 +83,7 @@ export class Context {
   get(key) {
     let value = null;
     for (const definition of this.build[key]) {
+      // console.log('test nestjs-context');
       value = this.buildContextValue(key, definition) ?? value;
     }
     if (!!this.config.cached) {
