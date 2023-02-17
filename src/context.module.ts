@@ -16,7 +16,6 @@ import {
 } from './middlewares';
 import { CONTEXT_MODULE_CONFIG } from './constants';
 import { addContextConfigDefaults, Context, ContextContainer } from './context';
-import { CurrentContext } from './context/current-context';
 
 export const createContextModule = (
   config: ContextConfigType = {
@@ -37,11 +36,6 @@ export const createContextModule = (
         useValue: configUseValue,
       },
       ContextContainer,
-      CurrentContext,
-      {
-        provide: Context,
-        useExisting: CurrentContext,
-      },
     ],
     imports,
     exports: [Context],

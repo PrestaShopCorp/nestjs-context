@@ -4,12 +4,16 @@ import { ContextContainer } from '../context/context-container';
 
 @Injectable()
 export class CreateContextMiddleware implements NestMiddleware {
-  constructor(private readonly contexts: ContextContainer) {}
-  use(req: any, res: any, next: () => void) {
-    this.contexts.add(req);
-    res.on('finish', () => {
-      this.contexts.remove(req);
+
+  constructor(private readonly contextContainer: ContextContainer) {}
+
+  use(request: any, response: any, next: () => void) {
+    this.contextContainer.createAndAddContextFromRequest(request);
+
+    response.on('finish', () => {
+      this.contextContainer.removeContextFromRequest(request);
     });
+
     next();
   }
 }
