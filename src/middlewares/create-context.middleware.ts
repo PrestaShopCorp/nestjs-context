@@ -8,7 +8,7 @@ export class CreateContextMiddleware implements NestMiddleware {
   use(req: any, res: any, next: () => void) {
     this.contexts.add(req);
     res.on('finish', () => {
-      this.contexts.remove(req);
+      this.contexts.remove();
     });
     next();
   }

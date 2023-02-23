@@ -3,46 +3,117 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { CONTEXT_MODULE_CONFIG, HEADER_REQUEST_ID } from '../constants';
 import { ContextConfigType, RequestType } from '../interfaces';
-import { generateId } from '../tools';
+// import { generateId } from '../tools';
+import { ClsService } from 'nestjs-cls';
 
 @Injectable()
 export class ContextContainer {
   private contexts: Record<string, Context> = {};
   private contextStack: string[] = [];
+  private requestId: string;
 
   constructor(
     @Inject(CONTEXT_MODULE_CONFIG) private readonly config: ContextConfigType,
+    private readonly cls: ClsService,
     private readonly moduleRef?: ModuleRef,
-  ) {}
+  ) {
+    this.requestId = this.cls.getId();
+  }
+
   static getId(request: RequestType): string {
     if (!!request.headers) {
       return request.headers[HEADER_REQUEST_ID] as string;
     }
     return request[HEADER_REQUEST_ID];
   }
-  private getCurrentId() {
-    return this.contextStack[this.contextStack.length - 1];
-  }
+
+  // private getCurrentId() {
+  //   return this.contextStack[this.contextStack.length - 1];
+  // }
+
   current() {
     /// @todo jdm : this should return null as fallback and we should be using create-context decorators instead
+    // const request: RequestType = {
+    //   [HEADER_REQUEST_ID]: generateId(),
+    // };
     const request: RequestType = {
-      [HEADER_REQUEST_ID]: generateId(),
+      [HEADER_REQUEST_ID]: this.requestId,
     };
-    return this.contextStack.length
-      ? this.contexts[this.getCurrentId()]
+    // console.log('request : ', this.request);
+    if (this.contexts[this.requestId]) {
+      console.log('current context found : ', {
+        id: this.contexts[this.requestId].getId(),
+        baseUrl: this.contexts[this.requestId].request.baseUrl,
+        body: this.contexts[this.requestId].request.body,
+        correlationId:
+          this.contexts[this.requestId].getCachedValue('correlation_id'),
+      });
+    } else {
+      console.log('current context not found');
+    }
+
+    return this.contextStack.length && this.contexts[this.requestId]
+      ? this.contexts[this.requestId]
       : this.add(request);
+    // return this.contextStack.length
+    //   ? this.contexts[this.getCurrentId()]
+    //   : this.add(request);
   }
+
   get(request: RequestType) {
-    return this.contexts[ContextContainer.getId(request)] ?? null;
+    console.log('request ID CLS : ', this.requestId);
+    if (this.contexts[this.requestId]) {
+      console.log('get context found : ', {
+        id: this.contexts[this.requestId].getId(),
+        baseUrl: this.contexts[this.requestId].request.baseUrl,
+        body: this.contexts[this.requestId].request.body,
+        correlationId:
+          this.contexts[this.requestId].getCachedValue('correlation_id'),
+      });
+    } else {
+      console.log('get context not found');
+    }
+
+    return this.contexts[this.requestId] ?? null;
+    // return this.contexts[ContextContainer.getId(request)] ?? null;
   }
+
   add(request: RequestType) {
-    const id = ContextContainer.getId(request);
-    this.contextStack.push(id);
-    this.contexts[id] = new Context(id, this.config, request, this.moduleRef);
-    return this.contexts[id];
+    // const id = ContextContainer.getId(request);
+    // if (!id) {
+    //   id = ContextContainer.getId(request);
+    //   const tmp = new Error();
+    //   console.log(tmp.stack);
+    // }
+    this.contextStack.push(this.requestId);
+    this.contexts[this.requestId] = new Context(
+      this.requestId,
+      this.config,
+      request,
+      this.moduleRef,
+    );
+
+    console.log('context stack after adding : ', this.contextStack);
+    console.log('context added : ', {
+      id: this.contexts[this.requestId].getId(),
+      baseUrl: this.contexts[this.requestId].request.baseUrl,
+      body: this.contexts[this.requestId].request.body,
+      correlationId:
+        this.contexts[this.requestId].getCachedValue('correlation_id'),
+    });
+    // console.log('context :', this.contexts[id]);
+    return this.contexts[this.requestId];
   }
-  remove(request: RequestType) {
-    delete this.contexts[ContextContainer.getId(request)];
-    this.contextStack.pop();
+
+  remove() {
+    const index = this.contextStack.indexOf(this.requestId);
+    console.log('request ID CLS : ', this.requestId);
+    // const id = ContextContainer.getId(request);
+    delete this.contexts[this.requestId];
+    this.contextStack.splice(index, 1);
+    console.log('context removed  : ', this.requestId);
+    console.log('remaining stack : ', this.contextStack);
+    // delete this.contexts[ContextContainer.getId(request)];
+    // this.contextStack.pop();
   }
 }

@@ -17,6 +17,7 @@ import {
 import { CONTEXT_MODULE_CONFIG } from './constants';
 import { addContextConfigDefaults, Context, ContextContainer } from './context';
 import { CurrentContext } from './context/current-context';
+import { ClsModule } from 'nestjs-cls';
 
 export const createContextModule = (
   config: ContextConfigType = {
@@ -50,7 +51,20 @@ export const createContextModule = (
 };
 
 @Global()
-@Module({})
+@Module({
+  imports: [
+    // Register the ClsModule and automatically mount the ClsMiddleware
+    ClsModule.forRoot({
+      global: true,
+      middleware: {
+        mount: true,
+        generateId: true,
+      },
+    }),
+  ],
+  providers: [],
+  controllers: [],
+})
 export class ContextModule implements NestModule {
   private alreadyRegister = false;
   constructor(
