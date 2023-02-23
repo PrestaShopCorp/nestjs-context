@@ -43,7 +43,10 @@ export class ContextContainer {
         id: this.contexts[id].getId(),
         baseUrl: this.contexts[id].request.baseUrl,
         body: this.contexts[id].request.body,
-        correlationId: this.contexts[id].getCachedValue('correlation_id'),
+        headerCorrelationId:
+          this.contexts[id].getCachedValue('x-correlation-id'),
+        contextCorrelationId:
+          this.contexts[id].getCachedValue('correlation_id'),
       });
     } else {
       console.log('current context not found');
@@ -65,7 +68,10 @@ export class ContextContainer {
         id: this.contexts[id].getId(),
         baseUrl: this.contexts[id].request.baseUrl,
         body: this.contexts[id].request.body,
-        correlationId: this.contexts[id].getCachedValue('correlation_id'),
+        headerCorrelationId:
+          this.contexts[id].getCachedValue('x-correlation-id'),
+        contextCorrelationId:
+          this.contexts[id].getCachedValue('correlation_id'),
       });
     } else {
       console.log('get context not found');
@@ -91,7 +97,8 @@ export class ContextContainer {
       id: this.contexts[id].getId(),
       baseUrl: this.contexts[id].request.baseUrl,
       body: this.contexts[id].request.body,
-      correlationId: this.contexts[id].getCachedValue('correlation_id'),
+      headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
+      contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
     });
     // console.log('context :', this.contexts[id]);
     return this.contexts[id];

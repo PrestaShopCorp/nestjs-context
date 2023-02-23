@@ -42,7 +42,8 @@ let ContextContainer = class ContextContainer {
                 id: this.contexts[id].getId(),
                 baseUrl: this.contexts[id].request.baseUrl,
                 body: this.contexts[id].request.body,
-                correlationId: this.contexts[id].getCachedValue('correlation_id'),
+                headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
+                contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
             });
         }
         else {
@@ -60,7 +61,8 @@ let ContextContainer = class ContextContainer {
                 id: this.contexts[id].getId(),
                 baseUrl: this.contexts[id].request.baseUrl,
                 body: this.contexts[id].request.body,
-                correlationId: this.contexts[id].getCachedValue('correlation_id'),
+                headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
+                contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
             });
         }
         else {
@@ -77,7 +79,8 @@ let ContextContainer = class ContextContainer {
             id: this.contexts[id].getId(),
             baseUrl: this.contexts[id].request.baseUrl,
             body: this.contexts[id].request.body,
-            correlationId: this.contexts[id].getCachedValue('correlation_id'),
+            headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
+            contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
         });
         return this.contexts[id];
     }

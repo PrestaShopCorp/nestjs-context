@@ -1,2 +1,2 @@
 import { Type } from '@nestjs/common';
-export type DependencyInjectionType = string | symbol | Type<any>;
+export declare type DependencyInjectionType = string | symbol | Type<any>;
