@@ -8,7 +8,6 @@ export declare class ContextContainer {
     private readonly moduleRef?;
     private contexts;
     private contextStack;
-    private requestId;
     constructor(config: ContextConfigType, cls: ClsService, moduleRef?: ModuleRef);
     static getId(request: RequestType): string;
     current(): Context;

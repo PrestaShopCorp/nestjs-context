@@ -25,7 +25,6 @@ let ContextContainer = class ContextContainer {
         this.moduleRef = moduleRef;
         this.contexts = {};
         this.contextStack = [];
-        this.requestId = this.cls.getId();
     }
     static getId(request) {
         if (!!request.headers) {
@@ -34,57 +33,61 @@ let ContextContainer = class ContextContainer {
         return request[constants_1.HEADER_REQUEST_ID];
     }
     current() {
+        const id = this.cls.getId();
         const request = {
-            [constants_1.HEADER_REQUEST_ID]: this.requestId,
+            [constants_1.HEADER_REQUEST_ID]: id,
         };
-        if (this.contexts[this.requestId]) {
+        if (this.contexts[id]) {
             console.log('current context found : ', {
-                id: this.contexts[this.requestId].getId(),
-                baseUrl: this.contexts[this.requestId].request.baseUrl,
-                body: this.contexts[this.requestId].request.body,
-                correlationId: this.contexts[this.requestId].getCachedValue('correlation_id'),
+                id: this.contexts[id].getId(),
+                baseUrl: this.contexts[id].request.baseUrl,
+                body: this.contexts[id].request.body,
+                correlationId: this.contexts[id].getCachedValue('correlation_id'),
             });
         }
         else {
             console.log('current context not found');
         }
-        return this.contextStack.length && this.contexts[this.requestId]
-            ? this.contexts[this.requestId]
+        return this.contextStack.length && this.contexts[id]
+            ? this.contexts[id]
             : this.add(request);
     }
     get(request) {
-        console.log('request ID CLS : ', this.requestId);
-        if (this.contexts[this.requestId]) {
+        const id = this.cls.getId();
+        console.log('request ID CLS : ', id);
+        if (this.contexts[id]) {
             console.log('get context found : ', {
-                id: this.contexts[this.requestId].getId(),
-                baseUrl: this.contexts[this.requestId].request.baseUrl,
-                body: this.contexts[this.requestId].request.body,
-                correlationId: this.contexts[this.requestId].getCachedValue('correlation_id'),
+                id: this.contexts[id].getId(),
+                baseUrl: this.contexts[id].request.baseUrl,
+                body: this.contexts[id].request.body,
+                correlationId: this.contexts[id].getCachedValue('correlation_id'),
             });
         }
         else {
             console.log('get context not found');
         }
-        return this.contexts[this.requestId] ?? null;
+        return this.contexts[id] ?? null;
     }
     add(request) {
-        this.contextStack.push(this.requestId);
-        this.contexts[this.requestId] = new context_1.Context(this.requestId, this.config, request, this.moduleRef);
+        const id = this.cls.getId();
+        this.contextStack.push(id);
+        this.contexts[id] = new context_1.Context(id, this.config, request, this.moduleRef);
         console.log('context stack after adding : ', this.contextStack);
         console.log('context added : ', {
-            id: this.contexts[this.requestId].getId(),
-            baseUrl: this.contexts[this.requestId].request.baseUrl,
-            body: this.contexts[this.requestId].request.body,
-            correlationId: this.contexts[this.requestId].getCachedValue('correlation_id'),
+            id: this.contexts[id].getId(),
+            baseUrl: this.contexts[id].request.baseUrl,
+            body: this.contexts[id].request.body,
+            correlationId: this.contexts[id].getCachedValue('correlation_id'),
         });
-        return this.contexts[this.requestId];
+        return this.contexts[id];
     }
     remove() {
-        const index = this.contextStack.indexOf(this.requestId);
-        console.log('request ID CLS : ', this.requestId);
-        delete this.contexts[this.requestId];
+        const id = this.cls.getId();
+        const index = this.contextStack.indexOf(id);
+        console.log('request ID CLS : ', id);
+        delete this.contexts[id];
         this.contextStack.splice(index, 1);
-        console.log('context removed  : ', this.requestId);
+        console.log('context removed  : ', id);
         console.log('remaining stack : ', this.contextStack);
     }
 };
