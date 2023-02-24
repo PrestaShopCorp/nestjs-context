@@ -39,68 +39,25 @@ let ContextContainer = ContextContainer_1 = class ContextContainer {
         const request = {
             [constants_1.HEADER_REQUEST_ID]: id,
         };
-        if (this.contexts[id]) {
-            console.log('current context found : ', {
-                id: this.contexts[id].getId(),
-                baseUrl: this.contexts[id].request.baseUrl,
-                body: this.contexts[id].request.body,
-                headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
-                contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
-                headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
-                contextRequestId: this.contexts[id].getCachedValue('request_id'),
-                hostname: this.contexts[id].getCachedValue('hostname'),
-                bin: this.contexts[id].getCachedValue('bin'),
-                path: this.contexts[id].getCachedValue('path'),
-            });
-        }
-        else {
-            console.log('current context not found');
-        }
         return this.contextStack.length && this.contexts[id]
             ? this.contexts[id]
             : this.add(request);
     }
     get(request) {
         const id = this.cls.getId();
-        console.log('request ID CLS : ', id);
-        if (this.contexts[id]) {
-            console.log('get context found : ', {
-                id: this.contexts[id].getId(),
-                baseUrl: this.contexts[id].request.baseUrl,
-                body: this.contexts[id].request.body,
-                headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
-                contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
-                headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
-                contextRequestId: this.contexts[id].getCachedValue('request_id'),
-                hostname: this.contexts[id].getCachedValue('hostname'),
-                bin: this.contexts[id].getCachedValue('bin'),
-                path: this.contexts[id].getCachedValue('path'),
-            });
-        }
-        else {
-            console.log('get context not found');
-        }
         return this.contexts[id] ?? null;
     }
     add(request) {
         const id = this.cls.getId() ?? ContextContainer_1.getId(request);
-        this.contextStack.push(id);
         this.contexts[id] = new context_1.Context(id, this.config, request, this.moduleRef);
-        if (this.contexts[id].get('hostname')) {
-            console.log('context added : ', {
-                id: this.contexts[id].getId(),
-            });
-        }
+        this.contextStack.push(id);
         return this.contexts[id];
     }
     remove() {
         const id = this.cls.getId();
         const index = this.contextStack.indexOf(id);
-        console.log('request ID CLS : ', id);
         delete this.contexts[id];
         this.contextStack.splice(index, 1);
-        console.log('context removed  : ', id);
-        console.log('remaining stack : ', this.contextStack);
     }
 };
 ContextContainer = ContextContainer_1 = __decorate([

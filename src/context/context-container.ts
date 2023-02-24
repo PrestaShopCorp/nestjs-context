@@ -24,113 +24,37 @@ export class ContextContainer {
     return request[HEADER_REQUEST_ID];
   }
 
-  // private getCurrentId() {
-  //   return this.contextStack[this.contextStack.length - 1];
-  // }
-
   current() {
-    /// @todo jdm : this should return null as fallback and we should be using create-context decorators instead
-    // const request: RequestType = {
-    //   [HEADER_REQUEST_ID]: generateId(),
-    // };
     const id = this.cls.getId() ?? generateId();
     const request: RequestType = {
       [HEADER_REQUEST_ID]: id,
     };
-    // console.log('request : ', this.request);
-    if (this.contexts[id]) {
-      console.log('current context found : ', {
-        id: this.contexts[id].getId(),
-        baseUrl: this.contexts[id].request.baseUrl,
-        body: this.contexts[id].request.body,
-        headerCorrelationId:
-          this.contexts[id].getCachedValue('x-correlation-id'),
-        contextCorrelationId:
-          this.contexts[id].getCachedValue('correlation_id'),
-        headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
-        contextRequestId: this.contexts[id].getCachedValue('request_id'),
-        hostname: this.contexts[id].getCachedValue('hostname'),
-        bin: this.contexts[id].getCachedValue('bin'),
-        path: this.contexts[id].getCachedValue('path'),
-      });
-    } else {
-      console.log('current context not found');
-    }
 
     return this.contextStack.length && this.contexts[id]
       ? this.contexts[id]
       : this.add(request);
-    // return this.contextStack.length
-    //   ? this.contexts[this.getCurrentId()]
-    //   : this.add(request);
   }
 
   get(request: RequestType) {
     const id = this.cls.getId();
-    console.log('request ID CLS : ', id);
-    if (this.contexts[id]) {
-      console.log('get context found : ', {
-        id: this.contexts[id].getId(),
-        baseUrl: this.contexts[id].request.baseUrl,
-        body: this.contexts[id].request.body,
-        headerCorrelationId:
-          this.contexts[id].getCachedValue('x-correlation-id'),
-        contextCorrelationId:
-          this.contexts[id].getCachedValue('correlation_id'),
-        headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
-        contextRequestId: this.contexts[id].getCachedValue('request_id'),
-        hostname: this.contexts[id].getCachedValue('hostname'),
-        bin: this.contexts[id].getCachedValue('bin'),
-        path: this.contexts[id].getCachedValue('path'),
-      });
-    } else {
-      console.log('get context not found');
-    }
 
     return this.contexts[id] ?? null;
-    // return this.contexts[ContextContainer.getId(request)] ?? null;
   }
 
   add(request: RequestType) {
-    // const id = ContextContainer.getId(request);
     const id = this.cls.getId() ?? ContextContainer.getId(request);
-    // if (!id) {
-    //   id = ContextContainer.getId(request);
-    //   const tmp = new Error();
-    //   console.log(tmp.stack);
-    // }
-    this.contextStack.push(id);
     this.contexts[id] = new Context(id, this.config, request, this.moduleRef);
 
-    // console.log('context stack after adding : ', this.contextStack);
-    if (this.contexts[id].get('hostname')) {
-      console.log('context added : ', {
-        id: this.contexts[id].getId(),
-        // baseUrl: this.contexts[id].request.baseUrl,
-        // body: this.contexts[id].request.body,
-        // // headerCorrelationId: this.contexts[id].get('x-correlation-id'),
-        // contextCorrelationId: this.contexts[id].get('correlation_id'),
-        // // headerRequestId: this.contexts[id].get('x-request-id'),
-        // contextRequestId: this.contexts[id].get('request_id'),
-        // hostname: this.contexts[id].get('hostname'),
-        // bin: this.contexts[id].get('bin'),
-        // path: this.contexts[id].get('path'),
-      });
-    }
-    // console.log('context :', this.contexts[id]);
+    this.contextStack.push(id);
+
     return this.contexts[id];
   }
 
   remove() {
     const id = this.cls.getId();
     const index = this.contextStack.indexOf(id);
-    console.log('request ID CLS : ', id);
-    // const id = ContextContainer.getId(request);
+
     delete this.contexts[id];
     this.contextStack.splice(index, 1);
-    console.log('context removed  : ', id);
-    console.log('remaining stack : ', this.contextStack);
-    // delete this.contexts[ContextContainer.getId(request)];
-    // this.contextStack.pop();
   }
 }
