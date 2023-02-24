@@ -93,7 +93,7 @@ export class ContextContainer {
 
   add(request: RequestType) {
     // const id = ContextContainer.getId(request);
-    const id = this.cls.getId();
+    const id = this.cls.getId() ?? ContextContainer.getId(request);
     // if (!id) {
     //   id = ContextContainer.getId(request);
     //   const tmp = new Error();

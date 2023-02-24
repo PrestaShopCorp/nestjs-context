@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var ContextContainer_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContextContainer = void 0;
 const context_1 = require("./context");
@@ -19,7 +20,7 @@ const core_1 = require("@nestjs/core");
 const constants_1 = require("../constants");
 const tools_1 = require("../tools");
 const nestjs_cls_1 = require("nestjs-cls");
-let ContextContainer = class ContextContainer {
+let ContextContainer = ContextContainer_1 = class ContextContainer {
     constructor(config, cls, moduleRef) {
         this.config = config;
         this.cls = cls;
@@ -82,7 +83,7 @@ let ContextContainer = class ContextContainer {
         return this.contexts[id] ?? null;
     }
     add(request) {
-        const id = this.cls.getId();
+        const id = this.cls.getId() ?? ContextContainer_1.getId(request);
         this.contextStack.push(id);
         this.contexts[id] = new context_1.Context(id, this.config, request, this.moduleRef);
         console.log('context stack after adding : ', this.contextStack);
@@ -110,7 +111,7 @@ let ContextContainer = class ContextContainer {
         console.log('remaining stack : ', this.contextStack);
     }
 };
-ContextContainer = __decorate([
+ContextContainer = ContextContainer_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)(constants_1.CONTEXT_MODULE_CONFIG)),
     __metadata("design:paramtypes", [Object, nestjs_cls_1.ClsService,
