@@ -4,6 +4,7 @@ import { ModuleRef } from '@nestjs/core';
 import { CONTEXT_MODULE_CONFIG, HEADER_REQUEST_ID } from '../constants';
 import { ContextConfigType, RequestType } from '../interfaces';
 import { generateId } from '../tools';
+import { ClsService } from 'nestjs-cls';
 
 @Injectable()
 export class ContextContainer {
@@ -12,37 +13,48 @@ export class ContextContainer {
 
   constructor(
     @Inject(CONTEXT_MODULE_CONFIG) private readonly config: ContextConfigType,
+    private readonly cls: ClsService,
     private readonly moduleRef?: ModuleRef,
   ) {}
+
   static getId(request: RequestType): string {
     if (!!request.headers) {
       return request.headers[HEADER_REQUEST_ID] as string;
     }
     return request[HEADER_REQUEST_ID];
   }
-  private getCurrentId() {
-    return this.contextStack[this.contextStack.length - 1];
-  }
+
   current() {
-    /// @todo jdm : this should return null as fallback and we should be using create-context decorators instead
+    const id = this.cls.getId() ?? generateId();
     const request: RequestType = {
-      [HEADER_REQUEST_ID]: generateId(),
+      [HEADER_REQUEST_ID]: id,
     };
-    return this.contextStack.length
-      ? this.contexts[this.getCurrentId()]
+
+    return this.contextStack.length && this.contexts[id]
+      ? this.contexts[id]
       : this.add(request);
   }
+
   get(request: RequestType) {
-    return this.contexts[ContextContainer.getId(request)] ?? null;
+    const id = this.cls.getId();
+
+    return this.contexts[id] ?? null;
   }
+
   add(request: RequestType) {
-    const id = ContextContainer.getId(request);
-    this.contextStack.push(id);
+    const id = this.cls.getId() ?? ContextContainer.getId(request);
     this.contexts[id] = new Context(id, this.config, request, this.moduleRef);
+
+    this.contextStack.push(id);
+
     return this.contexts[id];
   }
-  remove(request: RequestType) {
-    delete this.contexts[ContextContainer.getId(request)];
-    this.contextStack.pop();
+
+  remove() {
+    const id = this.cls.getId();
+    const index = this.contextStack.indexOf(id);
+
+    delete this.contexts[id];
+    this.contextStack.splice(index, 1);
   }
 }

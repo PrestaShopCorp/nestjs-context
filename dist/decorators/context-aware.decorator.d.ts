@@ -1,0 +1,1 @@
+export declare const ContextAware: () => <T extends import("../interfaces/constructor.interface").Constructor<any>>(target: T) => T & import("../interfaces/constructor.interface").Constructor<import("../interfaces/context-aware.interface").ContextAwareInterface>;

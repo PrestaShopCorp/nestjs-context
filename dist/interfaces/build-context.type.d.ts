@@ -1,0 +1,11 @@
+import { ClassProvider } from '@nestjs/common';
+import { IContextPropertyProvider } from './context-property-provider.interface';
+import { ContextName } from './context-name.enum';
+import { HttpContextRequestProperty } from './http-context-request-property.enum';
+export declare type BuildContextFromValueType = string | number;
+export declare type BuildContextFromCallbackType = (req?: any) => any;
+export declare type BuildContextFromProviderType = ClassProvider<IContextPropertyProvider>['provide'];
+export declare type BuildContextFromHttpRequestType = `${HttpContextRequestProperty.BODY | HttpContextRequestProperty.QUERY | HttpContextRequestProperty.HEADERS | HttpContextRequestProperty.PARAMS}.${string}`;
+export declare type BuildFromGqlRequestType = 'string';
+export declare type BuildContextDefinitionType<T extends ContextName> = BuildContextFromValueType | BuildContextFromCallbackType | BuildContextFromProviderType | (T extends ContextName.HTTP ? BuildContextFromHttpRequestType : T extends ContextName.GQL_HTTP | ContextName.GQL_WS ? BuildFromGqlRequestType : never);
+export declare type BuildContextType<T extends ContextName> = Record<string, BuildContextDefinitionType<T>[]>;
