@@ -103,18 +103,22 @@ export class ContextContainer {
     this.contexts[id] = new Context(id, this.config, request, this.moduleRef);
 
     console.log('context stack after adding : ', this.contextStack);
-    console.log('context added : ', {
-      id: this.contexts[id].getId(),
-      baseUrl: this.contexts[id].request.baseUrl,
-      body: this.contexts[id].request.body,
-      headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
-      contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
-      headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
-      contextRequestId: this.contexts[id].getCachedValue('request_id'),
-      hostname: this.contexts[id].getCachedValue('hostname'),
-      bin: this.contexts[id].getCachedValue('bin'),
-      path: this.contexts[id].getCachedValue('path'),
-    });
+    if (this.contexts[id].getCachedValue('hostname')) {
+      console.log('context added : ', {
+        id: this.contexts[id].getId(),
+        baseUrl: this.contexts[id].request.baseUrl,
+        body: this.contexts[id].request.body,
+        headerCorrelationId:
+          this.contexts[id].getCachedValue('x-correlation-id'),
+        contextCorrelationId:
+          this.contexts[id].getCachedValue('correlation_id'),
+        headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
+        contextRequestId: this.contexts[id].getCachedValue('request_id'),
+        hostname: this.contexts[id].getCachedValue('hostname'),
+        bin: this.contexts[id].getCachedValue('bin'),
+        path: this.contexts[id].getCachedValue('path'),
+      });
+    }
     // console.log('context :', this.contexts[id]);
     return this.contexts[id];
   }
