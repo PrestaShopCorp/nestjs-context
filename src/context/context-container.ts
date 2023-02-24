@@ -106,15 +106,15 @@ export class ContextContainer {
     if (this.contexts[id].get('hostname')) {
       console.log('context added : ', {
         id: this.contexts[id].getId(),
-        baseUrl: this.contexts[id].request.baseUrl,
-        body: this.contexts[id].request.body,
-        // headerCorrelationId: this.contexts[id].get('x-correlation-id'),
-        contextCorrelationId: this.contexts[id].get('correlation_id'),
-        // headerRequestId: this.contexts[id].get('x-request-id'),
-        contextRequestId: this.contexts[id].get('request_id'),
-        hostname: this.contexts[id].get('hostname'),
-        bin: this.contexts[id].get('bin'),
-        path: this.contexts[id].get('path'),
+        // baseUrl: this.contexts[id].request.baseUrl,
+        // body: this.contexts[id].request.body,
+        // // headerCorrelationId: this.contexts[id].get('x-correlation-id'),
+        // contextCorrelationId: this.contexts[id].get('correlation_id'),
+        // // headerRequestId: this.contexts[id].get('x-request-id'),
+        // contextRequestId: this.contexts[id].get('request_id'),
+        // hostname: this.contexts[id].get('hostname'),
+        // bin: this.contexts[id].get('bin'),
+        // path: this.contexts[id].get('path'),
       });
     }
     // console.log('context :', this.contexts[id]);

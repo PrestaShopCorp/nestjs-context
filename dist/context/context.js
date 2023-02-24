@@ -60,7 +60,7 @@ class Context {
     }
     get(key) {
         let value = null;
-        for (const definition of this.build[key]) {
+        for (const definition of this.build[key] || []) {
             value = this.buildContextValue(key, definition) ?? value;
         }
         if (!!this.config.cached) {

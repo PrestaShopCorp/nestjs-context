@@ -89,13 +89,6 @@ let ContextContainer = ContextContainer_1 = class ContextContainer {
         if (this.contexts[id].get('hostname')) {
             console.log('context added : ', {
                 id: this.contexts[id].getId(),
-                baseUrl: this.contexts[id].request.baseUrl,
-                body: this.contexts[id].request.body,
-                contextCorrelationId: this.contexts[id].get('correlation_id'),
-                contextRequestId: this.contexts[id].get('request_id'),
-                hostname: this.contexts[id].get('hostname'),
-                bin: this.contexts[id].get('bin'),
-                path: this.contexts[id].get('path'),
             });
         }
         return this.contexts[id];
