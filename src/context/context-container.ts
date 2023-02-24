@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { CONTEXT_MODULE_CONFIG, HEADER_REQUEST_ID } from '../constants';
 import { ContextConfigType, RequestType } from '../interfaces';
-// import { generateId } from '../tools';
+import { generateId } from '../tools';
 import { ClsService } from 'nestjs-cls';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class ContextContainer {
     // const request: RequestType = {
     //   [HEADER_REQUEST_ID]: generateId(),
     // };
-    const id = this.cls.getId();
+    const id = this.cls.getId() ?? generateId();
     const request: RequestType = {
       [HEADER_REQUEST_ID]: id,
     };
@@ -47,6 +47,11 @@ export class ContextContainer {
           this.contexts[id].getCachedValue('x-correlation-id'),
         contextCorrelationId:
           this.contexts[id].getCachedValue('correlation_id'),
+        headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
+        contextRequestId: this.contexts[id].getCachedValue('request_id'),
+        hostname: this.contexts[id].getCachedValue('hostname'),
+        bin: this.contexts[id].getCachedValue('bin'),
+        path: this.contexts[id].getCachedValue('path'),
       });
     } else {
       console.log('current context not found');
@@ -72,6 +77,11 @@ export class ContextContainer {
           this.contexts[id].getCachedValue('x-correlation-id'),
         contextCorrelationId:
           this.contexts[id].getCachedValue('correlation_id'),
+        headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
+        contextRequestId: this.contexts[id].getCachedValue('request_id'),
+        hostname: this.contexts[id].getCachedValue('hostname'),
+        bin: this.contexts[id].getCachedValue('bin'),
+        path: this.contexts[id].getCachedValue('path'),
       });
     } else {
       console.log('get context not found');
@@ -99,6 +109,11 @@ export class ContextContainer {
       body: this.contexts[id].request.body,
       headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
       contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
+      headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
+      contextRequestId: this.contexts[id].getCachedValue('request_id'),
+      hostname: this.contexts[id].getCachedValue('hostname'),
+      bin: this.contexts[id].getCachedValue('bin'),
+      path: this.contexts[id].getCachedValue('path'),
     });
     // console.log('context :', this.contexts[id]);
     return this.contexts[id];

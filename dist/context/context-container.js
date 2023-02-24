@@ -17,6 +17,7 @@ const context_1 = require("./context");
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const constants_1 = require("../constants");
+const tools_1 = require("../tools");
 const nestjs_cls_1 = require("nestjs-cls");
 let ContextContainer = class ContextContainer {
     constructor(config, cls, moduleRef) {
@@ -33,7 +34,7 @@ let ContextContainer = class ContextContainer {
         return request[constants_1.HEADER_REQUEST_ID];
     }
     current() {
-        const id = this.cls.getId();
+        const id = this.cls.getId() ?? (0, tools_1.generateId)();
         const request = {
             [constants_1.HEADER_REQUEST_ID]: id,
         };
@@ -44,6 +45,11 @@ let ContextContainer = class ContextContainer {
                 body: this.contexts[id].request.body,
                 headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
                 contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
+                headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
+                contextRequestId: this.contexts[id].getCachedValue('request_id'),
+                hostname: this.contexts[id].getCachedValue('hostname'),
+                bin: this.contexts[id].getCachedValue('bin'),
+                path: this.contexts[id].getCachedValue('path'),
             });
         }
         else {
@@ -63,6 +69,11 @@ let ContextContainer = class ContextContainer {
                 body: this.contexts[id].request.body,
                 headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
                 contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
+                headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
+                contextRequestId: this.contexts[id].getCachedValue('request_id'),
+                hostname: this.contexts[id].getCachedValue('hostname'),
+                bin: this.contexts[id].getCachedValue('bin'),
+                path: this.contexts[id].getCachedValue('path'),
             });
         }
         else {
@@ -81,6 +92,11 @@ let ContextContainer = class ContextContainer {
             body: this.contexts[id].request.body,
             headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
             contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
+            headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
+            contextRequestId: this.contexts[id].getCachedValue('request_id'),
+            hostname: this.contexts[id].getCachedValue('hostname'),
+            bin: this.contexts[id].getCachedValue('bin'),
+            path: this.contexts[id].getCachedValue('path'),
         });
         return this.contexts[id];
     }
