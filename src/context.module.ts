@@ -51,20 +51,7 @@ export const createContextModule = (
 };
 
 @Global()
-@Module({
-  imports: [
-    // Register the ClsModule and automatically mount the ClsMiddleware
-    ClsModule.forRoot({
-      global: true,
-      middleware: {
-        mount: true,
-        generateId: true,
-      },
-    }),
-  ],
-  providers: [],
-  controllers: [],
-})
+@Module({})
 export class ContextModule implements NestModule {
   private alreadyRegister = false;
   constructor(
