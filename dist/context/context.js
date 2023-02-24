@@ -60,8 +60,6 @@ class Context {
     }
     get(key) {
         let value = null;
-        console.log('build', this.build);
-        console.log('key', key);
         for (const definition of this.build[key]) {
             value = this.buildContextValue(key, definition) ?? value;
         }
