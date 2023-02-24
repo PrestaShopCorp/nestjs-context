@@ -86,19 +86,18 @@ let ContextContainer = ContextContainer_1 = class ContextContainer {
         const id = this.cls.getId() ?? ContextContainer_1.getId(request);
         this.contextStack.push(id);
         this.contexts[id] = new context_1.Context(id, this.config, request, this.moduleRef);
-        console.log('context stack after adding : ', this.contextStack);
-        if (this.contexts[id].getCachedValue('hostname')) {
+        if (this.contexts[id].get('hostname')) {
             console.log('context added : ', {
                 id: this.contexts[id].getId(),
                 baseUrl: this.contexts[id].request.baseUrl,
                 body: this.contexts[id].request.body,
-                headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
-                contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
-                headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
-                contextRequestId: this.contexts[id].getCachedValue('request_id'),
-                hostname: this.contexts[id].getCachedValue('hostname'),
-                bin: this.contexts[id].getCachedValue('bin'),
-                path: this.contexts[id].getCachedValue('path'),
+                headerCorrelationId: this.contexts[id].get('x-correlation-id'),
+                contextCorrelationId: this.contexts[id].get('correlation_id'),
+                headerRequestId: this.contexts[id].get('x-request-id'),
+                contextRequestId: this.contexts[id].get('request_id'),
+                hostname: this.contexts[id].get('hostname'),
+                bin: this.contexts[id].get('bin'),
+                path: this.contexts[id].get('path'),
             });
         }
         return this.contexts[id];
