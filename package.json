@@ -1,6 +1,6 @@
 {
   "name": "nestjs-context",
-  "version": "1.0.0",
+  "version": "0.14.0",
   "description": "Nestjs execution context information service including request scoped info",
   "author": "Jacob Dharandas Méndez <j.dharandas@gmail.com>",
   "contributors": [
