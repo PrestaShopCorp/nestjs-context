@@ -17,7 +17,6 @@ import {
 import { CONTEXT_MODULE_CONFIG } from './constants';
 import { addContextConfigDefaults, Context, ContextContainer } from './context';
 import { CurrentContext } from './context/current-context';
-import { ClsModule } from 'nestjs-cls';
 
 export const createContextModule = (
   config: ContextConfigType = {
