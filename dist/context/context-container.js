@@ -45,12 +45,12 @@ let ContextContainer = ContextContainer_1 = class ContextContainer {
                 baseUrl: this.contexts[id].request.baseUrl,
                 body: this.contexts[id].request.body,
                 headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
-                contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
+                contextCorrelationId: this.contexts[id].get('correlation_id'),
                 headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
-                contextRequestId: this.contexts[id].getCachedValue('request_id'),
-                hostname: this.contexts[id].getCachedValue('hostname'),
-                bin: this.contexts[id].getCachedValue('bin'),
-                path: this.contexts[id].getCachedValue('path'),
+                contextRequestId: this.contexts[id].get('request_id'),
+                hostname: this.contexts[id].get('hostname'),
+                bin: this.contexts[id].get('bin'),
+                path: this.contexts[id].get('path'),
             });
         }
         else {
@@ -69,12 +69,12 @@ let ContextContainer = ContextContainer_1 = class ContextContainer {
                 baseUrl: this.contexts[id].request.baseUrl,
                 body: this.contexts[id].request.body,
                 headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
-                contextCorrelationId: this.contexts[id].getCachedValue('correlation_id'),
+                contextCorrelationId: this.contexts[id].get('correlation_id'),
                 headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
-                contextRequestId: this.contexts[id].getCachedValue('request_id'),
-                hostname: this.contexts[id].getCachedValue('hostname'),
-                bin: this.contexts[id].getCachedValue('bin'),
-                path: this.contexts[id].getCachedValue('path'),
+                contextRequestId: this.contexts[id].get('request_id'),
+                hostname: this.contexts[id].get('hostname'),
+                bin: this.contexts[id].get('bin'),
+                path: this.contexts[id].get('path'),
             });
         }
         else {
@@ -89,6 +89,15 @@ let ContextContainer = ContextContainer_1 = class ContextContainer {
         if (this.contexts[id].get('hostname')) {
             console.log('context added : ', {
                 id: this.contexts[id].getId(),
+                baseUrl: this.contexts[id].request.baseUrl,
+                body: this.contexts[id].request.body,
+                headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
+                contextCorrelationId: this.contexts[id].get('correlation_id'),
+                headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
+                contextRequestId: this.contexts[id].get('request_id'),
+                hostname: this.contexts[id].get('hostname'),
+                bin: this.contexts[id].get('bin'),
+                path: this.contexts[id].get('path'),
             });
         }
         return this.contexts[id];
