@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Global,
   Inject,
@@ -17,7 +18,6 @@ import {
 import { CONTEXT_MODULE_CONFIG } from './constants';
 import { addContextConfigDefaults, Context, ContextContainer } from './context';
 import { CurrentContext } from './context/current-context';
-import { ClsModule } from 'nestjs-cls';
 
 export const createContextModule = (
   config: ContextConfigType = {
@@ -45,26 +45,13 @@ export const createContextModule = (
       },
     ],
     imports,
-    exports: [Context],
+    exports: [Context, ContextContainer],
     global: true,
   };
 };
 
 @Global()
-@Module({
-  imports: [
-    // Register the ClsModule and automatically mount the ClsMiddleware
-    ClsModule.forRoot({
-      global: true,
-      middleware: {
-        mount: true,
-        generateId: true,
-      },
-    }),
-  ],
-  providers: [],
-  controllers: [],
-})
+@Module({})
 export class ContextModule implements NestModule {
   private alreadyRegister = false;
   constructor(
