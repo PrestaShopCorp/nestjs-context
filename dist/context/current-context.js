@@ -17,13 +17,18 @@ let CurrentContext = class CurrentContext {
         this.contexts = contexts;
     }
     call(name, ...args) {
+        const currentContext = this.contexts.current();
+        if (currentContext instanceof Promise) {
+            return currentContext.then((context) => context[name](...args));
+        }
         return this.contexts.current()[name](...args);
     }
     get(...args) {
         return this.call('get', ...args);
     }
     getAll(...args) {
-        return this.call('getAll', ...args);
+        const context = this.call('getAll', ...args);
+        return context;
     }
     createView(...args) {
         return this.call('createView', ...args);

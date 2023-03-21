@@ -18,15 +18,18 @@ const context_1 = require("./context");
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const constants_1 = require("../constants");
-const tools_1 = require("../tools");
 const nestjs_cls_1 = require("nestjs-cls");
+const use_cls_teardown_decorator_1 = require("../decorators/use-cls-teardown.decorator");
+const teardown = function (contextContainer, request) {
+    console.log('this : ', this);
+    contextContainer.remove();
+};
 let ContextContainer = ContextContainer_1 = class ContextContainer {
     constructor(config, cls, moduleRef) {
         this.config = config;
         this.cls = cls;
         this.moduleRef = moduleRef;
         this.contexts = {};
-        this.contextStack = [];
     }
     static getId(request) {
         if (!!request.headers) {
@@ -35,83 +38,41 @@ let ContextContainer = ContextContainer_1 = class ContextContainer {
         return request[constants_1.HEADER_REQUEST_ID];
     }
     current() {
-        const id = this.cls.getId() ?? (0, tools_1.generateId)();
+        const id = this.cls.getId();
         const request = {
             [constants_1.HEADER_REQUEST_ID]: id,
         };
-        if (this.contexts[id]) {
-            console.log('current context found : ', {
-                id: this.contexts[id].getId(),
-                baseUrl: this.contexts[id].request.baseUrl,
-                body: this.contexts[id].request.body,
-                headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
-                contextCorrelationId: this.contexts[id].get('correlation_id'),
-                headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
-                contextRequestId: this.contexts[id].get('request_id'),
-                hostname: this.contexts[id].get('hostname'),
-                bin: this.contexts[id].get('bin'),
-                path: this.contexts[id].get('path'),
-            });
+        if (!this.contexts[id]) {
+            this.addWithTeardown(this, request);
         }
-        else {
-            console.log('current context not found');
-        }
-        return this.contextStack.length && this.contexts[id]
-            ? this.contexts[id]
-            : this.add(request);
+        return this.contexts[id];
     }
-    get(request) {
+    get() {
         const id = this.cls.getId();
-        console.log('request ID CLS : ', id);
-        if (this.contexts[id]) {
-            console.log('get context found : ', {
-                id: this.contexts[id].getId(),
-                baseUrl: this.contexts[id].request.baseUrl,
-                body: this.contexts[id].request.body,
-                headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
-                contextCorrelationId: this.contexts[id].get('correlation_id'),
-                headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
-                contextRequestId: this.contexts[id].get('request_id'),
-                hostname: this.contexts[id].get('hostname'),
-                bin: this.contexts[id].get('bin'),
-                path: this.contexts[id].get('path'),
-            });
-        }
-        else {
-            console.log('get context not found');
-        }
         return this.contexts[id] ?? null;
     }
     add(request) {
         const id = this.cls.getId() ?? ContextContainer_1.getId(request);
-        this.contextStack.push(id);
         this.contexts[id] = new context_1.Context(id, this.config, request, this.moduleRef);
-        if (this.contexts[id].get('hostname')) {
-            console.log('context added : ', {
-                id: this.contexts[id].getId(),
-                baseUrl: this.contexts[id].request.baseUrl,
-                body: this.contexts[id].request.body,
-                headerCorrelationId: this.contexts[id].getCachedValue('x-correlation-id'),
-                contextCorrelationId: this.contexts[id].get('correlation_id'),
-                headerRequestId: this.contexts[id].getCachedValue('x-request-id'),
-                contextRequestId: this.contexts[id].get('request_id'),
-                hostname: this.contexts[id].get('hostname'),
-                bin: this.contexts[id].get('bin'),
-                path: this.contexts[id].get('path'),
-            });
-        }
         return this.contexts[id];
+    }
+    async addWithTeardown(contextContainer, request) {
+        return this.add(request);
     }
     remove() {
         const id = this.cls.getId();
-        const index = this.contextStack.indexOf(id);
-        console.log('request ID CLS : ', id);
         delete this.contexts[id];
-        this.contextStack.splice(index, 1);
-        console.log('context removed  : ', id);
-        console.log('remaining stack : ', this.contextStack);
     }
 };
+__decorate([
+    (0, use_cls_teardown_decorator_1.UseClsTeardown)({
+        generateId: false,
+        teardown,
+    }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [ContextContainer, Object]),
+    __metadata("design:returntype", Promise)
+], ContextContainer.prototype, "addWithTeardown", null);
 ContextContainer = ContextContainer_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)(constants_1.CONTEXT_MODULE_CONFIG)),

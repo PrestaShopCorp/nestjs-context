@@ -2,7 +2,7 @@ import { ModuleMetadata } from '@nestjs/common';
 import { RouteInfo } from '@nestjs/common/interfaces';
 import { BuildContextType } from './build-context.type';
 import { ContextName } from './context-name.enum';
-declare type CommonConfig = {
+type CommonConfig = {
     cached?: boolean;
     addDefaults?: boolean;
     providers?: ModuleMetadata['providers'];
@@ -12,7 +12,7 @@ declare type CommonConfig = {
         header?: string;
     };
 };
-export declare type ContextConfigType = CommonConfig & ({
+export type ContextConfigType = CommonConfig & ({
     type: ContextName.HTTP;
     build: BuildContextType<ContextName.HTTP>;
 } | {

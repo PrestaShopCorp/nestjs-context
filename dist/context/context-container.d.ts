@@ -7,11 +7,11 @@ export declare class ContextContainer {
     private readonly cls;
     private readonly moduleRef?;
     private contexts;
-    private contextStack;
     constructor(config: ContextConfigType, cls: ClsService, moduleRef?: ModuleRef);
     static getId(request: RequestType): string;
     current(): Context;
-    get(request: RequestType): Context;
+    get(): Context;
     add(request: RequestType): Context;
+    addWithTeardown(contextContainer: ContextContainer, request: RequestType): Promise<Context>;
     remove(): void;
 }

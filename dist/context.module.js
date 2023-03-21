@@ -19,7 +19,6 @@ const middlewares_1 = require("./middlewares");
 const constants_1 = require("./constants");
 const context_1 = require("./context");
 const current_context_1 = require("./context/current-context");
-const nestjs_cls_1 = require("nestjs-cls");
 const createContextModule = (config = {
     type: interfaces_1.ContextName.HTTP,
     build: {},
@@ -44,7 +43,7 @@ const createContextModule = (config = {
             },
         ],
         imports,
-        exports: [context_1.Context],
+        exports: [context_1.Context, context_1.ContextContainer],
         global: true,
     };
 };
@@ -78,19 +77,7 @@ let ContextModule = class ContextModule {
 };
 ContextModule = __decorate([
     (0, common_1.Global)(),
-    (0, common_1.Module)({
-        imports: [
-            nestjs_cls_1.ClsModule.forRoot({
-                global: true,
-                middleware: {
-                    mount: true,
-                    generateId: true,
-                },
-            }),
-        ],
-        providers: [],
-        controllers: [],
-    }),
+    (0, common_1.Module)({}),
     __param(0, (0, common_1.Inject)(constants_1.CONTEXT_MODULE_CONFIG)),
     __metadata("design:paramtypes", [Object])
 ], ContextModule);

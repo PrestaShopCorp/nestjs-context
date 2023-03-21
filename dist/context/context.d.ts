@@ -7,14 +7,14 @@ export declare class Context {
     private readonly moduleRef?;
     private readonly cache;
     private readonly build;
-    constructor(id: number | string | Symbol, config: ContextConfigType, request: RequestType, moduleRef?: ModuleRef);
-    getId(): string | number | Symbol;
+    constructor(id: number | string | symbol, config: ContextConfigType, request: RequestType, moduleRef?: ModuleRef);
+    getId(): string | number | symbol;
     setCachedValue(key: string | symbol, value: any): this;
     getCachedValue(key: string | symbol): any;
     isCached(key: string | symbol): boolean;
     private getProvider;
     private buildContextValue;
-    get(key: any): any;
+    get(key: string): Record<string, any>;
     getAll(includeNull?: boolean): any;
     createView(mapping: any): Record<string, any>;
 }
