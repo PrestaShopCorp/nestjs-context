@@ -3,6 +3,12 @@ import { RouteInfo } from '@nestjs/common/interfaces';
 import { BuildContextType } from './build-context.type';
 import { ContextName } from './context-name.enum';
 type CommonConfig = {
+    lruCache?: {
+        ttl: number;
+        ttlAutopurge: boolean;
+    } | {
+        max: number;
+    };
     cached?: boolean;
     addDefaults?: boolean;
     providers?: ModuleMetadata['providers'];

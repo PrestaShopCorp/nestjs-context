@@ -13,46 +13,41 @@ exports.TestService = void 0;
 const common_1 = require("@nestjs/common");
 const nestjs_cls_1 = require("nestjs-cls");
 const context_1 = require("../../../context");
-const context_container_exposer_mock_1 = require("../exposers/context-container-exposer.mock");
 const async_request_service_exposer_mock_1 = require("../exposers/async-request-service-exposer.mock");
-const use_cls_teardown_decorator_1 = require("../../../decorators/use-cls-teardown.decorator");
-const teardown = function () {
-    this.clearContext();
-};
+const lru_cache_1 = require("lru-cache");
 let TestService = class TestService {
-    constructor(cls, context, contextContainer, contextContainerExposer, asyncRequestService) {
+    constructor(cls, context, contextContainer, asyncRequestService) {
         this.cls = cls;
         this.context = context;
         this.contextContainer = contextContainer;
-        this.contextContainerExposer = contextContainerExposer;
         this.asyncRequestService = asyncRequestService;
+        this.cache = new lru_cache_1.default({ max: 50 });
     }
     clearContext() {
         this.contextContainer.remove();
     }
     async testEmitEvent(testValue, awaitId) {
-        const contexts = this.contextContainerExposer.getContexts();
+        const clsId = this.cls.getId();
+        const id = this.context.getId();
         if (awaitId) {
             await this.asyncRequestService.getResponse(awaitId);
         }
         return {
-            clsId: this.cls.getId(),
+            clsId,
             context: {
-                id: this.context.getId(),
+                id,
                 ...this.context.getAll(),
                 testValue: this.cls.get('testValue'),
             },
-            contexts: Object.keys(contexts),
         };
     }
 };
 __decorate([
-    (0, use_cls_teardown_decorator_1.UseClsTeardown)({
+    (0, nestjs_cls_1.UseCls)({
         generateId: true,
         setup(cls, testValue) {
             cls.set('testValue', testValue);
         },
-        teardown,
     }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
@@ -63,7 +58,6 @@ TestService = __decorate([
     __metadata("design:paramtypes", [nestjs_cls_1.ClsService,
         context_1.Context,
         context_1.ContextContainer,
-        context_container_exposer_mock_1.ContextContainerExposer,
         async_request_service_exposer_mock_1.AsyncRequestServiceExposer])
 ], TestService);
 exports.TestService = TestService;

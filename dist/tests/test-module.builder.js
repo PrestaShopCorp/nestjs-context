@@ -7,7 +7,7 @@ const context_1 = require("../context");
 const async_request_service_exposer_mock_1 = require("./mocks/exposers/async-request-service-exposer.mock");
 const context_container_exposer_mock_1 = require("./mocks/exposers/context-container-exposer.mock");
 const test_module_mock_1 = require("./mocks/module/test-module.mock");
-async function buildTestModule() {
+async function buildTestModule(maxCache = 100) {
     let app;
     class ContextContainerServiceMock {
         initContextContainer() {
@@ -18,6 +18,14 @@ async function buildTestModule() {
         getContexts() {
             this.initContextContainer();
             return this.contextContainer.contexts;
+        }
+        getCache() {
+            this.initContextContainer();
+            return this.contextContainer.cache;
+        }
+        getConfig() {
+            this.initContextContainer();
+            return this.contextContainer.config;
         }
     }
     class AsyncRequestServiceMock {
@@ -35,7 +43,7 @@ async function buildTestModule() {
         }
     }
     const moduleRef = await testing_1.Test.createTestingModule({
-        imports: [test_module_mock_1.TestModule],
+        imports: [test_module_mock_1.TestModule.forRoot(maxCache)],
     })
         .overrideProvider(context_container_exposer_mock_1.ContextContainerExposer)
         .useClass(ContextContainerServiceMock)

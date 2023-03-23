@@ -1,5 +1,8 @@
 export declare class ContextContainerExposer {
     private contexts;
+    private cache;
+    private config;
     getContexts(): any;
-    current(): any;
+    getCache(): any;
+    getConfig(): any;
 }

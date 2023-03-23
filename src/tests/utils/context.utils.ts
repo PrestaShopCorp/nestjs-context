@@ -1,6 +1,12 @@
 import { ContextResponseInterface } from '../interfaces/context-response.interface';
 import { ContextInterface } from '../interfaces/context.interface';
 
+export enum RequestType {
+  HTTP = 'http',
+  GRAPHQL = 'graphql',
+  EVENT = 'event',
+}
+
 export type ContextType = ContextInterface & { testValue: string };
 export type ContextResponse = { context: ContextType } & Pick<
   ContextResponseInterface,
@@ -24,16 +30,30 @@ export function assertContext(
   expect(context.bin).not.toBeNull();
   expect(context.path).not.toBeNull();
   expect(context.protocol).not.toBeNull();
-  expect(contexts).not.toBeNull();
-  expect(contexts).toHaveLength(contextStackLength);
-  expect(contexts).toContainEqual(clsId);
+
+  if (contexts) {
+    expect(contexts).not.toBeNull();
+    expect(contexts).toHaveLength(contextStackLength);
+    expect(contexts).toContainEqual(clsId);
+  }
 }
 
 export function assertMultipleContext(
   nb: number,
   requests: Record<string, any>,
+  requestType: RequestType,
 ): void {
   for (let i = 1; i <= nb; i++) {
-    assertContext(requests[i].response, requests[i].testValue, 1);
+    let response;
+
+    if (requestType === RequestType.HTTP) {
+      response = requests[i].response.body;
+    } else if (requestType === RequestType.GRAPHQL) {
+      response = requests[i].response.data.testGQLQuery;
+    } else if (requestType === RequestType.EVENT) {
+      response = requests[i].response;
+    }
+
+    assertContext(response, requests[i].testValue, 1);
   }
 }

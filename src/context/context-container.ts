@@ -2,29 +2,23 @@
 import { Context } from './context';
 import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
+import LRUCache from 'lru-cache';
 import { CONTEXT_MODULE_CONFIG, HEADER_REQUEST_ID } from '../constants';
 import { ContextConfigType, RequestType } from '../interfaces';
 import { ClsService } from 'nestjs-cls';
-import { UseClsTeardown } from '../decorators/use-cls-teardown.decorator';
-
-const teardown: (
-  this: ContextContainer,
-  contextContainer: ContextContainer,
-  request: RequestType,
-) => void | Promise<void> = function (contextContainer, request) {
-  console.log('this : ', this);
-  contextContainer.remove();
-};
 
 @Injectable()
 export class ContextContainer {
   private contexts: Record<string, Context> = {};
+  private cache: LRUCache<string, Context>;
 
   constructor(
     @Inject(CONTEXT_MODULE_CONFIG) private readonly config: ContextConfigType,
     private readonly cls: ClsService,
     private readonly moduleRef?: ModuleRef,
-  ) {}
+  ) {
+    this.cache = new LRUCache(config.lruCache || { max: 500 });
+  }
 
   static getId(request: RequestType): string {
     if (!!request.headers) {
@@ -40,35 +34,26 @@ export class ContextContainer {
       [HEADER_REQUEST_ID]: id,
     };
 
-    if (!this.contexts[id]) {
-      this.addWithTeardown(this, request);
-    }
-
-    return this.contexts[id];
+    return this.get() ?? this.add(request);
   }
 
   get(): Context {
     const id = this.cls.getId();
 
-    return this.contexts[id] ?? null;
+    return this.contexts[id] ?? (this.cache.get(id) || null);
   }
 
   add(request: RequestType): Context {
     const id = this.cls.getId() ?? ContextContainer.getId(request);
-    this.contexts[id] = new Context(id, this.config, request, this.moduleRef);
+    const context = new Context(id, this.config, request, this.moduleRef);
 
-    return this.contexts[id];
-  }
+    if (request.protocol !== undefined) {
+      this.contexts[id] = context;
+    } else {
+      this.cache.set(id, context);
+    }
 
-  @UseClsTeardown({
-    generateId: false,
-    teardown,
-  })
-  async addWithTeardown(
-    contextContainer: ContextContainer,
-    request: RequestType,
-  ): Promise<Context> {
-    return this.add(request);
+    return context;
   }
 
   remove(): void {

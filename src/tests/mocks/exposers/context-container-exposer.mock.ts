@@ -4,12 +4,18 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class ContextContainerExposer {
   private contexts;
+  private cache;
+  private config;
 
   getContexts() {
     return null;
   }
 
-  current() {
+  getCache() {
+    return null;
+  }
+
+  getConfig() {
     return null;
   }
 }

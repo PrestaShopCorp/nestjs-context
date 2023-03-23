@@ -5,7 +5,7 @@ import { AsyncRequestServiceExposer } from './mocks/exposers/async-request-servi
 import { ContextContainerExposer } from './mocks/exposers/context-container-exposer.mock';
 import { TestModule } from './mocks/module/test-module.mock';
 
-export async function buildTestModule() {
+export async function buildTestModule(maxCache = 100) {
   // eslint-disable-next-line prefer-const
   let app: INestApplication;
 
@@ -18,7 +18,8 @@ export async function buildTestModule() {
           ContextContainer,
         ) as unknown as {
           contexts: ContextContainer['contexts'];
-          current(): ContextContainer['current'];
+          cache: ContextContainer['cache'];
+          config: ContextContainer['config'];
         };
       }
     }
@@ -27,6 +28,18 @@ export async function buildTestModule() {
       this.initContextContainer();
 
       return this.contextContainer.contexts;
+    }
+
+    getCache() {
+      this.initContextContainer();
+
+      return this.contextContainer.cache;
+    }
+
+    getConfig() {
+      this.initContextContainer();
+
+      return this.contextContainer.config;
     }
   }
 
@@ -48,7 +61,7 @@ export async function buildTestModule() {
   }
 
   const moduleRef = await Test.createTestingModule({
-    imports: [TestModule],
+    imports: [TestModule.forRoot(maxCache)],
   })
     .overrideProvider(ContextContainerExposer)
     .useClass(ContextContainerServiceMock)

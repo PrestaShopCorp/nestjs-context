@@ -246,6 +246,38 @@ export class MyProvider {
 }
 ```
 
+### Using LRU Cache
+Warning !!!
+
+In order to avoid a memory with the contexts generated with a non HTTP event.
+Check the [LRU Cache documentation](https://www.npmjs.com/package/lru-cache) to know more.
+The parameters that you can customize are :
+- max
+- ttl
+- ttlAutopurge
+
+```typescript
+import { Module, Logger } from '@nestjs/common';
+import { ContextModule } from 'nesjs-context';
+import { GetUser } from './context-providers';
+
+@Module({
+  imports: [
+    ContextModule.register({
+          build: {
+            testValue: ['req.headers.x-test-value'],
+          },
+          type: ContextName.HTTP,
+          lruCache: {
+            max: 500, // max items cache limit
+            ttl: 10000, // TTL for an item in the cache
+            ttlAutopurge: false,
+          },
+        }),
+  ],
+})
+export class ExampleModule {}
+```
 ## Using the @BuildDto decorator
 
 You can use @BuildDto in your controllers to build a dto using different parts of the request

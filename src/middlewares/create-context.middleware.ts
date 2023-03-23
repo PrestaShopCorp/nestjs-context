@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
 import { NestMiddleware } from '@nestjs/common';
-import { UseCls } from 'nestjs-cls';
-import { UseClsTeardown } from 'src/decorators/use-cls-teardown.decorator';
 import { ContextContainer } from '../context/context-container';
 
 @Injectable()

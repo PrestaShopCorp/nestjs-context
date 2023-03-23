@@ -1,6 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.assertMultipleContext = exports.assertContext = void 0;
+exports.assertMultipleContext = exports.assertContext = exports.RequestType = void 0;
+var RequestType;
+(function (RequestType) {
+    RequestType["HTTP"] = "http";
+    RequestType["GRAPHQL"] = "graphql";
+    RequestType["EVENT"] = "event";
+})(RequestType = exports.RequestType || (exports.RequestType = {}));
 function assertContext(response, contextTestValue, contextStackLength) {
     const { context, clsId, contexts } = response;
     expect(context).not.toBeNull();
@@ -13,14 +19,26 @@ function assertContext(response, contextTestValue, contextStackLength) {
     expect(context.bin).not.toBeNull();
     expect(context.path).not.toBeNull();
     expect(context.protocol).not.toBeNull();
-    expect(contexts).not.toBeNull();
-    expect(contexts).toHaveLength(contextStackLength);
-    expect(contexts).toContainEqual(clsId);
+    if (contexts) {
+        expect(contexts).not.toBeNull();
+        expect(contexts).toHaveLength(contextStackLength);
+        expect(contexts).toContainEqual(clsId);
+    }
 }
 exports.assertContext = assertContext;
-function assertMultipleContext(nb, requests) {
+function assertMultipleContext(nb, requests, requestType) {
     for (let i = 1; i <= nb; i++) {
-        assertContext(requests[i].response, requests[i].testValue, 1);
+        let response;
+        if (requestType === RequestType.HTTP) {
+            response = requests[i].response.body;
+        }
+        else if (requestType === RequestType.GRAPHQL) {
+            response = requests[i].response.data.testGQLQuery;
+        }
+        else if (requestType === RequestType.EVENT) {
+            response = requests[i].response;
+        }
+        assertContext(response, requests[i].testValue, 1);
     }
 }
 exports.assertMultipleContext = assertMultipleContext;

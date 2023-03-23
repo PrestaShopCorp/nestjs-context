@@ -5,5 +5,5 @@ export interface ContextResponseInterface {
 
   context: ContextInterface;
 
-  contexts: Array<string>;
+  contexts?: Array<string>;
 }

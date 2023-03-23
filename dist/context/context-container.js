@@ -17,19 +17,16 @@ exports.ContextContainer = void 0;
 const context_1 = require("./context");
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
+const lru_cache_1 = require("lru-cache");
 const constants_1 = require("../constants");
 const nestjs_cls_1 = require("nestjs-cls");
-const use_cls_teardown_decorator_1 = require("../decorators/use-cls-teardown.decorator");
-const teardown = function (contextContainer, request) {
-    console.log('this : ', this);
-    contextContainer.remove();
-};
 let ContextContainer = ContextContainer_1 = class ContextContainer {
     constructor(config, cls, moduleRef) {
         this.config = config;
         this.cls = cls;
         this.moduleRef = moduleRef;
         this.contexts = {};
+        this.cache = new lru_cache_1.default(config.lruCache || { max: 500 });
     }
     static getId(request) {
         if (!!request.headers) {
@@ -42,37 +39,28 @@ let ContextContainer = ContextContainer_1 = class ContextContainer {
         const request = {
             [constants_1.HEADER_REQUEST_ID]: id,
         };
-        if (!this.contexts[id]) {
-            this.addWithTeardown(this, request);
-        }
-        return this.contexts[id];
+        return this.get() ?? this.add(request);
     }
     get() {
         const id = this.cls.getId();
-        return this.contexts[id] ?? null;
+        return this.contexts[id] ?? (this.cache.get(id) || null);
     }
     add(request) {
         const id = this.cls.getId() ?? ContextContainer_1.getId(request);
-        this.contexts[id] = new context_1.Context(id, this.config, request, this.moduleRef);
-        return this.contexts[id];
-    }
-    async addWithTeardown(contextContainer, request) {
-        return this.add(request);
+        const context = new context_1.Context(id, this.config, request, this.moduleRef);
+        if (request.protocol !== undefined) {
+            this.contexts[id] = context;
+        }
+        else {
+            this.cache.set(id, context);
+        }
+        return context;
     }
     remove() {
         const id = this.cls.getId();
         delete this.contexts[id];
     }
 };
-__decorate([
-    (0, use_cls_teardown_decorator_1.UseClsTeardown)({
-        generateId: false,
-        teardown,
-    }),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [ContextContainer, Object]),
-    __metadata("design:returntype", Promise)
-], ContextContainer.prototype, "addWithTeardown", null);
 ContextContainer = ContextContainer_1 = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)(constants_1.CONTEXT_MODULE_CONFIG)),

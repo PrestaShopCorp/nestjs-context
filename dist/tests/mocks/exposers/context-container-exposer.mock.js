@@ -12,7 +12,10 @@ let ContextContainerExposer = class ContextContainerExposer {
     getContexts() {
         return null;
     }
-    current() {
+    getCache() {
+        return null;
+    }
+    getConfig() {
         return null;
     }
 };
