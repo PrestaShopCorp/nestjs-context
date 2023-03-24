@@ -249,7 +249,7 @@ export class MyProvider {
 ### Using LRU Cache
 Warning !!!
 
-In order to avoid a memory with the contexts generated with a non HTTP event.
+In order to avoid a memory leak with the contexts generated with a non HTTP event.
 Check the [LRU Cache documentation](https://www.npmjs.com/package/lru-cache) to know more.
 The parameters that you can customize are :
 - max
