@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Global,
   Inject,
@@ -44,7 +45,7 @@ export const createContextModule = (
       },
     ],
     imports,
-    exports: [Context],
+    exports: [Context, ContextContainer],
     global: true,
   };
 };

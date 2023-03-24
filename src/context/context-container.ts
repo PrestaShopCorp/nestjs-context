@@ -1,48 +1,64 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Context } from './context';
 import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
+import LRUCache from 'lru-cache';
 import { CONTEXT_MODULE_CONFIG, HEADER_REQUEST_ID } from '../constants';
 import { ContextConfigType, RequestType } from '../interfaces';
-import { generateId } from '../tools';
+import { ClsService } from 'nestjs-cls';
 
 @Injectable()
 export class ContextContainer {
   private contexts: Record<string, Context> = {};
-  private contextStack: string[] = [];
+  private cache: LRUCache<string, Context>;
 
   constructor(
     @Inject(CONTEXT_MODULE_CONFIG) private readonly config: ContextConfigType,
+    private readonly cls: ClsService,
     private readonly moduleRef?: ModuleRef,
-  ) {}
+  ) {
+    this.cache = new LRUCache(config.lruCache || { max: 500 });
+  }
+
   static getId(request: RequestType): string {
     if (!!request.headers) {
       return request.headers[HEADER_REQUEST_ID] as string;
     }
+
     return request[HEADER_REQUEST_ID];
   }
-  private getCurrentId() {
-    return this.contextStack[this.contextStack.length - 1];
-  }
-  current() {
-    /// @todo jdm : this should return null as fallback and we should be using create-context decorators instead
+
+  current(): Context {
+    const id = this.cls.getId();
     const request: RequestType = {
-      [HEADER_REQUEST_ID]: generateId(),
+      [HEADER_REQUEST_ID]: id,
     };
-    return this.contextStack.length
-      ? this.contexts[this.getCurrentId()]
-      : this.add(request);
+
+    return this.get() ?? this.add(request);
   }
-  get(request: RequestType) {
-    return this.contexts[ContextContainer.getId(request)] ?? null;
+
+  get(): Context {
+    const id = this.cls.getId();
+
+    return this.contexts[id] ?? (this.cache.get(id) || null);
   }
-  add(request: RequestType) {
-    const id = ContextContainer.getId(request);
-    this.contextStack.push(id);
-    this.contexts[id] = new Context(id, this.config, request, this.moduleRef);
-    return this.contexts[id];
+
+  add(request: RequestType): Context {
+    const id = this.cls.getId() ?? ContextContainer.getId(request);
+    const context = new Context(id, this.config, request, this.moduleRef);
+
+    if (request.protocol !== undefined) {
+      this.contexts[id] = context;
+    } else {
+      this.cache.set(id, context);
+    }
+
+    return context;
   }
-  remove(request: RequestType) {
-    delete this.contexts[ContextContainer.getId(request)];
-    this.contextStack.pop();
+
+  remove(): void {
+    const id = this.cls.getId();
+
+    delete this.contexts[id];
   }
 }

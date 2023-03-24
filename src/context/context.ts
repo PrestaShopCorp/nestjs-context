@@ -1,3 +1,4 @@
+import { Type } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { get, invert, pick, pickBy, set } from 'lodash';
 import {
@@ -11,7 +12,7 @@ export class Context {
   private readonly build: ContextConfigType['build'];
 
   constructor(
-    private readonly id: number | string | Symbol,
+    private readonly id: number | string | symbol,
     private readonly config: ContextConfigType,
     public readonly request: RequestType,
     private readonly moduleRef?: ModuleRef,
@@ -19,16 +20,17 @@ export class Context {
     this.build = config?.build || {};
   }
 
-  getId() {
+  getId(): string | number | symbol {
     return this.id;
   }
 
-  setCachedValue(key: string | symbol, value: any) {
+  setCachedValue(key: string | symbol, value: any): this {
     this.cache[key] = value;
+
     return this;
   }
 
-  getCachedValue(key: string | symbol) {
+  getCachedValue(key: string | symbol): any {
     return this.cache[key] ?? null;
   }
 
@@ -36,7 +38,9 @@ export class Context {
     return typeof this.cache[key] !== 'undefined';
   }
 
-  private getProvider(name): IContextPropertyProvider {
+  private getProvider(
+    name: string | symbol | Type<any>,
+  ): IContextPropertyProvider {
     try {
       return this.moduleRef?.get(name);
     } catch (e) {
@@ -44,7 +48,7 @@ export class Context {
     }
   }
 
-  private buildContextValue(key, definition) {
+  private buildContextValue(key, definition): any {
     // context set value
     if (this.isCached(key)) {
       return this.getCachedValue(key);
@@ -80,22 +84,27 @@ export class Context {
     return null;
   }
 
-  get(key) {
+  get(key: string): Record<string, any> {
     let value = null;
-    for (const definition of this.build[key]) {
+
+    for (const definition of this.build[key] || []) {
       value = this.buildContextValue(key, definition) ?? value;
     }
+
     if (!!this.config.cached) {
       this.setCachedValue(key, value);
     }
+
     return value;
   }
 
-  getAll(includeNull = false) {
+  getAll(includeNull = false): any {
     const context: any = {};
+
     if (!this.build) {
       return context;
     }
+
     for (const key of Object.keys(this.build)) {
       // TODO this only works with \\. OR ., but not for both
       if (key.includes('\\.')) {
@@ -104,12 +113,13 @@ export class Context {
         set(context, key, this.get(key));
       }
     }
+
     return includeNull
       ? context
       : pickBy(context, (ctx) => ctx !== null && ctx !== undefined);
   }
 
-  createView(mapping: any) {
+  createView(mapping: any): Record<string, any> {
     const labelsMapping = invert(mapping);
     const toPick = Object.keys(labelsMapping);
     const subContext = pick(this.getAll(), toPick);
@@ -117,6 +127,7 @@ export class Context {
     toPick.forEach((ctxProperty) => {
       view[labelsMapping[ctxProperty]] = get(subContext, ctxProperty);
     });
+
     return view;
   }
 }
